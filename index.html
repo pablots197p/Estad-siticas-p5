@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="PHANTOM HABITS - Rastreador de hábitos diarios estilo RPG con parámetros sociales y rachas." />
   <title>PHANTOM HABITS // RPG Habit Tracker</title>
+  <link rel="manifest" href="./manifest.json" />
   <style>
     :root {
       --rebel-red: #e60012;
@@ -1371,6 +1372,9 @@
     renderMultiStatPicker();
     renderAll();
     setInterval(updateHeader, 60000);
+    if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+}
   </script>
 </body>
 </html>
