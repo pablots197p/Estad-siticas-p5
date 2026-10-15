@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>PHANTOM HABITS // Registro Diario</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --p5-red: #e60012;
+      --p5-black: #0a0a0a;
+      --p5-gold: #ffd700;
+    }
+    body {
+      background-color: var(--p5-black);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(230, 0, 18, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(230, 0, 18, 0.18) 0%, transparent 50%),
+        repeating-linear-gradient(45deg, #111 0px, #111 10px, #0a0a0a 10px, #0a0a0a 20px);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .p5-font {
+      font-family: 'Anton', sans-serif;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .p5-box {
+      background: #0f0f0f;
+      border: 3px solid #fff;
+      box-shadow: 6px 6px 0px var(--p5-red);
+      transform: skew(-1.5deg);
+    }
+    .p5-box-red {
+      background: var(--p5-red);
+      border: 3px solid #000;
+      box-shadow: 6px 6px 0px #fff;
+      transform: skew(1.5deg);
+    }
+    .p5-btn {
+      background: #fff;
+      color: #000;
+      font-family: 'Anton', sans-serif;
+      text-transform: uppercase;
+      padding: 0.45rem 0.9rem;
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0px var(--p5-red);
+      transform: skew(-6deg);
+      transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+      cursor: pointer;
+      user-select: none;
+    }
+    .p5-btn:hover {
+      background: var(--p5-gold);
+    }
+    .p5-btn:active {
+      transform: skew(-6deg) translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--p5-red);
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1) rotate(-8deg); }
+      100% { opacity: 0; transform: translateY(-45px) scale(1.35) rotate(8deg); }
+    }
+    .note-float {
+      position: fixed;
+      pointer-events: none;
+      color: var(--p5-gold);
+      font-family: 'Anton', sans-serif;
+      font-size: 1.75rem;
+      text-shadow: 3px 3px 0px #000, -1px -1px 0px var(--p5-red);
+      animation: floatUp 0.85s ease-out forwards;
+      z-index: 9999;
+    }
+    @keyframes rankUpAnim {
+      0% { transform: scale(0.7) skew(-5deg); opacity: 0; }
+      20% { transform: scale(1.05) skew(-5deg); opacity: 1; }
+      80% { transform: scale(1) skew(-5deg); opacity: 1; }
+      100% { transform: scale(1.1) skew(-5deg); opacity: 0; }
+    }
+    .rank-up-banner {
+      animation: rankUpAnim 2.6s ease-in-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 pb-16">
+
+  <!-- BANNER FLOTANTE DE SUBIDA DE RANGO -->
+  <div id="rank-up-container" class="fixed inset-0 pointer-events-none flex items-center justify-center z-50"></div>
+
+  <!-- CABECERA -->
+  <header class="max-w-6xl mx-auto mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="flex items-center gap-4">
+      <div class="bg-[#e60012] border-4 border-white px-4 py-2 transform -rotate-3 shadow-[6px_6px_0_#000]">
+        <div id="p5-date" class="p5-font text-3xl md:text-4xl leading-none text-white">-- / --</div>
+        <div id="p5-day" class="p5-font text-xs md:text-sm bg-black text-white px-2 py-0.5 mt-1 inline-block">---</div>
+      </div>
+      <div>
+        <h1 class="p5-font text-3xl md:text-5xl tracking-wider text-white drop-shadow-[4px_4px_0_#e60012]">
+          PHANTOM HABITS
+        </h1>
+        <div class="flex items-center gap-2 mt-0.5">
+          <span id="p5-slot" class="inline-block bg-white text-black font-bold text-xs px-2 py-0.5 uppercase transform -skew-x-12 border border-black">
+            DÍA A DÍA
+          </span>
+          <span id="total-days-badge" class="text-xs font-bold text-[#ffd700] uppercase">
+            0 DÍAS REGISTRADOS
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONES DE CONTROL -->
+    <div class="flex flex-wrap items-center gap-2 self-end sm:self-auto">
+      <button onclick="toggleSound()" id="sound-btn" class="p5-btn text-xs md:text-sm">
+        🔊 SFX: ON
+      </button>
+      <button onclick="openSettingsModal()" class="p5-btn text-xs md:text-sm bg-[#ffd700]">
+        ⚙️ DATOS / BACKUP
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+    <!-- COLUMNA IZQUIERDA: PARÁMETROS Y RACHA -->
+    <section class="lg:col-span-5 flex flex-col gap-6">
+      
+      <!-- ESTRELLA DE PARÁMETROS SOCIALES -->
+      <div class="p5-box p-5 relative">
+        <div class="bg-white text-black p5-font text-xl px-3 py-1 inline-block transform -skew-x-12 -mt-8 mb-2 border-2 border-black shadow-[4px_4px_0_#e60012]">
+          PARÁMETROS SOCIALES
+        </div>
+
+        <div class="flex justify-center items-center my-1">
+          <svg id="radar-svg" viewBox="0 0 300 300" class="w-full max-w-[280px] h-auto overflow-visible"></svg>
+        </div>
+
+        <!-- PROGRESO POR ESTADÍSTICA -->
+        <div id="stats-breakdown" class="grid grid-cols-1 gap-2.5 mt-2 text-xs"></div>
+      </div>
+
+      <!-- GRÁFICO DE RACHAS SEMANALES -->
+      <div class="p5-box p-5">
+        <div class="flex justify-between items-center mb-4">
+          <div class="bg-[#e60012] text-white p5-font text-xl px-3 py-1 inline-block transform -skew-x-12 border-2 border-white">
+            ÚLTIMOS 7 DÍAS
+          </div>
+          <div id="streak-counter" class="p5-font text-lg text-[#ffd700]">
+            🔥 RACHA: 0 DÍAS
+          </div>
+        </div>
+
+        <div id="weekly-bars" class="grid grid-cols-7 gap-2 items-end h-36 pt-6 px-2 bg-black/60 border border-zinc-800"></div>
+        <p class="text-[11px] text-zinc-400 mt-2 text-right">
+          Mejor racha histórica: <span id="best-streak" class="text-white font-bold">0 días</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- COLUMNA DERECHA: MISIONES DIARIAS -->
+    <section class="lg:col-span-7 flex flex-col gap-6">
+      
+      <!-- AÑADIR / EDITAR HÁBITO -->
+      <div class="p5-box-red p-5">
+        <div class="flex justify-between items-center mb-3">
+          <h2 id="form-title" class="p5-font text-2xl text-white drop-shadow-[2px_2px_0_#000]">
+            + NUEVO HÁBITO DIARIO
+          </h2>
+          <button id="cancel-edit-btn" onclick="cancelEdit()" class="hidden text-xs bg-black text-white px-2 py-1 font-bold uppercase border border-white">
+            Cancelar edición
+          </button>
+        </div>
+        <form id="habit-form" class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+          <input type="hidden" id="edit-habit-id" value="" />
+          <input 
+            id="habit-title" 
+            type="text" 
+            required
+            maxlength="70"
+            placeholder="Escribe tu objetivo diario..." 
+            class="sm:col-span-6 bg-black text-white border-2 border-white px-3 py-2 text-sm focus:outline-none focus:border-[#ffd700]"
+          />
+          <select id="habit-stat" class="sm:col-span-3 bg-black text-white border-2 border-white px-2 py-2 text-sm font-bold">
+            <option value="conocimiento">Conocimiento</option>
+            <option value="coraje">Coraje</option>
+            <option value="destreza">Destreza</option>
+            <option value="gentileza">Gentileza</option>
+            <option value="encanto">Encanto</option>
+          </select>
+          <select id="habit-points" class="sm:col-span-2 bg-black text-[#ffd700] border-2 border-white px-2 py-2 text-sm font-bold">
+            <option value="1">♪ (+1)</option>
+            <option value="2" selected>♪♪ (+2)</option>
+            <option value="3">♪♪♪ (+3)</option>
+          </select>
+          <button type="submit" id="submit-habit-btn" class="sm:col-span-1 p5-btn flex items-center justify-center text-base">
+            OK
+          </button>
+        </form>
+      </div>
+
+      <!-- LISTA DE MISIONES DE HOY -->
+      <div class="p5-box p-5 flex-1 flex flex-col">
+        <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+          <div class="bg-white text-black p5-font text-xl px-3 py-1 transform -skew-x-12 border-2 border-black shadow-[4px_4px_0_#e60012]">
+            OBJETIVOS DE HOY
+          </div>
+          <div id="daily-progress-text" class="p5-font text-lg text-white">
+            0 / 0 COMPLETADOS
+          </div>
+        </div>
+
+        <!-- FILTRO POR ESTADÍSTICA -->
+        <div id="filter-tabs" class="flex flex-wrap gap-1.5 mb-4">
+          <button onclick="setFilter('all')" data-filter="all" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-white bg-[#e60012] text-white">Todos</button>
+          <button onclick="setFilter('conocimiento')" data-filter="conocimiento" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Conocimiento</button>
+          <button onclick="setFilter('coraje')" data-filter="coraje" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Coraje</button>
+          <button onclick="setFilter('destreza')" data-filter="destreza" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Destreza</button>
+          <button onclick="setFilter('gentileza')" data-filter="gentileza" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Gentileza</button>
+          <button onclick="setFilter('encanto')" data-filter="encanto" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Encanto</button>
+        </div>
+
+        <div id="habits-list" class="space-y-3 flex-1"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- MODAL DE DATOS Y COPIA DE SEGURIDAD -->
+  <div id="settings-modal" class="fixed inset-0 bg-black/85 hidden items-center justify-center p-4 z-50">
+    <div class="p5-box max-w-md w-full p-6 relative">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="p5-font text-2xl text-[#ffd700]">GESTIÓN DE DATOS</h3>
+        <button onclick="closeSettingsModal()" class="text-white font-bold text-xl hover:text-[#e60012]">✕</button>
+      </div>
+
+      <p class="text-xs text-zinc-300 mb-4 leading-relaxed">
+        Tus datos se guardan automáticamente en este dispositivo. Te recomendamos descargar una copia de seguridad (`.json`) de vez en cuando para no perder nunca tu progreso.
+      </p>
+
+      <div class="space-y-3">
+        <button onclick="exportBackup()" class="p5-btn w-full text-sm flex items-center justify-center gap-2 bg-[#ffd700]">
+          ⬇ DESCARGAR COPIA DE SEGURIDAD (.JSON)
+        </button>
+
+        <label class="p5-btn w-full text-sm flex items-center justify-center gap-2 cursor-pointer bg-white">
+          ⬆ RESTAURAR COPIA DE SEGURIDAD (.JSON)
+          <input type="file" accept=".json" onchange="importBackup(event)" class="hidden" />
+        </label>
+      </div>
+
+      <hr class="border-zinc-800 my-5" />
+
+      <div class="bg-zinc-950 border border-red-900/60 p-3">
+        <div class="text-xs font-bold text-red-400 uppercase mb-1">Zona de peligro</div>
+        <p class="text-[11px] text-zinc-400 mb-3">
+          Si quieres borrar todos los hábitos, rachas y devolver las estadísticas a 0 para empezar de cero:
+        </p>
+        <button onclick="resetAllData()" class="bg-red-700 hover:bg-red-600 text-white font-bold text-xs px-3 py-2 uppercase w-full border border-white">
+          🗑️ BORRAR TODO Y EMPEZAR DE CERO
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "p5_phantom_habits_prod_v1";
+
+    // Curva de progresión para largo plazo (Puntos necesarios para cada nivel del 1 al 5)
+    // Nv.1: 0 | Nv.2: 30 | Nv.3: 90 | Nv.4: 200 | Nv.5 (MAX): 400
+    const RANK_THRESHOLDS = [0, 30, 90, 200, 400];
+    const MAX_STAT_POINTS = 400;
+
+    const STAT_META = {
+      conocimiento: { label: "Conocimiento", ranks: ["Despistado", "Informado", "Sabio", "Erudito", "Enciclopédico"] },
+      coraje:       { label: "Coraje",       ranks: ["Tímido", "Ordinario", "Decidido", "Intrépido", "Corazón de León"] },
+      destreza:     { label: "Destreza",     ranks: ["Torpe", "Principiante", "Hábil", "Maestro", "Trascendente"] },
+      gentileza:    { label: "Gentileza",    ranks: ["Indiferente", "Considerado", "Empático", "Generoso", "Salvador"] },
+      encanto:      { label: "Encanto",      ranks: ["Anodino", "Confiable", "Persuasivo", "Carismático", "Seductor"] }
+    };
+
+    const STAT_KEYS = Object.keys(STAT_META);
+
+    // Fecha local exacta YYYY-MM-DD (sin desfase UTC)
+    function getLocalISO(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function createCleanState() {
+      return {
+        stats: { conocimiento: 0, coraje: 0, destreza: 0, gentileza: 0, encanto: 0 },
+        habits: [],
+        // history guarda por fecha: { completed: ["id1"], totalTarget: 5 }
+        history: {},
+        bestStreak: 0,
+        soundEnabled: true,
+        createdAt: getLocalISO(0)
+      };
+    }
+
+    let state = loadState();
+    let currentFilter = "all";
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return createCleanState();
+        const parsed = JSON.parse(raw);
+        return {
+          ...createCleanState(),
+          ...parsed,
+          stats: { ...createCleanState().stats, ...(parsed.stats || {}) }
+        };
+      } catch {
+        return createCleanState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderAll();
+    }
+
+    // --- NIVELES Y PROGRESIÓN ---
+    function getRankIndex(points) {
+      for (let i = RANK_THRESHOLDS.length - 1; i >= 0; i--) {
+        if (points >= RANK_THRESHOLDS[i]) return i;
+      }
+      return 0;
+    }
+
+    function getNextThreshold(points) {
+      const idx = getRankIndex(points);
+      if (idx >= RANK_THRESHOLDS.length - 1) return MAX_STAT_POINTS;
+      return RANK_THRESHOLDS[idx + 1];
+    }
+
+    // --- EFECTOS DE SONIDO ---
+    function playNoteSound(points = 1, isRankUp = false) {
+      if (!state.soundEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const freqs = isRankUp ? [523.25, 659.25, 783.99, 1046.5] : [523.25, 659.25, 783.99];
+        const count = isRankUp ? 4 : points;
+        for (let i = 0; i < count; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = isRankUp ? "sawtooth" : "triangle";
+          osc.frequency.setValueAtTime(freqs[i % freqs.length], ctx.currentTime + i * 0.08);
+          gain.gain.setValueAtTime(0.14, ctx.currentTime + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.24);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + i * 0.08);
+          osc.stop(ctx.currentTime + i * 0.08 + 0.25);
+        }
+      } catch {}
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      saveState();
+    }
+
+    function showRankUpBanner(statKey, newRankIndex) {
+      playNoteSound(3, true);
+      const container = document.getElementById("rank-up-container");
+      const meta = STAT_META[statKey];
+      const banner = document.createElement("div");
+      banner.className = "rank-up-banner bg-[#e60012] border-4 border-white px-6 py-4 shadow-[10px_10px_0_#000] text-center";
+      banner.innerHTML = `
+        <div class="p5-font text-sm bg-black text-[#ffd700] px-2 py-0.5 inline-block mb-1">¡SUBIDA DE RANGO!</div>
+        <div class="p5-font text-3xl text-white tracking-wider">${meta.label.toUpperCase()} ★${newRankIndex + 1}</div>
+        <div class="font-bold text-sm text-[#ffd700] uppercase mt-1">"${meta.ranks[newRankIndex]}"</div>
+      `;
+      container.appendChild(banner);
+      setTimeout(() => banner.remove(), 2600);
+    }
+
+    // --- RENDERIZADO ---
+    function updateHeader() {
+      const now = new Date();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      const days = ["DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"];
+      document.getElementById("p5-date").textContent = `${d} / ${m}`;
+      document.getElementById("p5-day").textContent = days[now.getDay()];
+
+      const hour = now.getHours();
+      document.getElementById("p5-slot").textContent =
+        hour < 6 ? "MADRUGADA" : hour < 13 ? "MAÑANA" : hour < 20 ? "TARDE" : "NOCHE (LEBLANC)";
+
+      document.getElementById("sound-btn").textContent = state.soundEnabled ? "🔊 SFX: ON" : "🔇 SFX: OFF";
+
+      const activeDays = Object.keys(state.history).filter(k => (state.history[k]?.completed?.length || 0) > 0).length;
+      document.getElementById("total-days-badge").textContent = `${activeDays} DÍAS ACTIVOS`;
+    }
+
+    function renderRadar() {
+      const svg = document.getElementById("radar-svg");
+      const cx = 150, cy = 150, maxR = 98;
+      const levels = [0.2, 0.4, 0.6, 0.8, 1.0];
+
+      let html = "";
+
+      levels.forEach((lvl, idx) => {
+        const pts = STAT_KEYS.map((_, i) => {
+          const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+          return `${cx + Math.cos(angle) * maxR * lvl},${cy + Math.sin(angle) * maxR * lvl}`;
+        }).join(" ");
+        html += `<polygon points="${pts}" fill="${idx === 4 ? 'rgba(230,0,18,0.12)' : 'none'}" stroke="${idx === 4 ? '#fff' : '#3a3a3a'}" stroke-width="${idx === 4 ? '2.5' : '1'}" />`;
+      });
+
+      STAT_KEYS.forEach((key, i) => {
+        const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+        const x2 = cx + Math.cos(angle) * maxR;
+        const y2 = cy + Math.sin(angle) * maxR;
+        const lx = cx + Math.cos(angle) * (maxR + 32);
+        const ly = cy + Math.sin(angle) * (maxR + 22);
+        const val = state.stats[key] || 0;
+        const rankLvl = getRankIndex(val) + 1;
+
+        html += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#444" stroke-dasharray="3,3" />`;
+        html += `
+          <text x="${lx}" y="${ly}" fill="#fff" font-family="Anton" font-size="12.5" text-anchor="middle" dominant-baseline="middle">
+            ${STAT_META[key].label.toUpperCase()} ★${rankLvl}
+          </text>
+        `;
+      });
+
+      // Estrella proporcional al rango y progreso hacia el siguiente nivel
+      const userPts = STAT_KEYS.map((key, i) => {
+        const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+        const pts = state.stats[key] || 0;
+        const rIdx = getRankIndex(pts);
+        let ratio = 0.08;
+        if (rIdx >= 4) {
+          ratio = 1.0;
+        } else {
+          const curFloor = RANK_THRESHOLDS[rIdx];
+          const nextCeil = RANK_THRESHOLDS[rIdx + 1];
+          const progressInRank = (pts - curFloor) / (nextCeil - curFloor);
+          ratio = Math.max(0.08, (rIdx * 0.2) + (progressInRank * 0.2));
+        }
+        return `${cx + Math.cos(angle) * maxR * ratio},${cy + Math.sin(angle) * maxR * ratio}`;
+      }).join(" ");
+
+      html += `<polygon points="${userPts}" fill="rgba(255, 215, 0, 0.65)" stroke="#ffd700" stroke-width="3" />`;
+      svg.innerHTML = html;
+
+      // Lista de progreso de cada parámetro
+      const breakdown = document.getElementById("stats-breakdown");
+      breakdown.innerHTML = STAT_KEYS.map(key => {
+        const pts = state.stats[key] || 0;
+        const rIdx = getRankIndex(pts);
+        const nextPts = getNextThreshold(pts);
+        const curFloor = RANK_THRESHOLDS[rIdx];
+        const barPct = rIdx >= 4 ? 100 : Math.min(100, Math.round(((pts - curFloor) / (nextPts - curFloor)) * 100));
+
+        return `
+          <div class="bg-black/90 border border-zinc-800 px-3 py-2">
+            <div class="flex items-center justify-between mb-1">
+              <div>
+                <span class="font-bold text-white uppercase">${STAT_META[key].label}</span>
+                <span class="text-[#ffd700] ml-1.5 font-bold">Nv.${rIdx + 1} (${STAT_META[key].ranks[rIdx]})</span>
+              </div>
+              <div class="text-zinc-400 font-mono text-[11px]">
+                ${rIdx >= 4 ? `${pts} ♪ (MÁX)` : `${pts} /${nextPts} ♪`}
+              </div>
+            </div>
+            <div class="w-full bg-zinc-900 h-1.5 overflow-hidden">
+              <div class="bg-[#ffd700] h-full transition-all duration-300" style="width: ${barPct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function getDayRecord(isoDate) {
+      const raw = state.history[isoDate];
+      if (!raw) return { completed: [], totalTarget: state.habits.length };
+      // Compatibilidad por si acaso
+      if (Array.isArray(raw)) return { completed: raw, totalTarget: state.habits.length };
+      return {
+        completed: raw.completed || [],
+        totalTarget: raw.totalTarget || state.habits.length
+      };
+    }
+
+    function renderHabits() {
+      const today = getLocalISO(0);
+      const record = getDayRecord(today);
+      const completedToday = record.completed;
+      const list = document.getElementById("habits-list");
+
+      const validCompletedCount = state.habits.filter(h => completedToday.includes(h.id)).length;
+      document.getElementById("daily-progress-text").textContent =
+        `${validCompletedCount} / ${state.habits.length} COMPLETADOS`;
+
+      // Actualizar pestañas de filtro
+      document.querySelectorAll(".filter-btn").forEach(btn => {
+        const active = btn.dataset.filter === currentFilter;
+        btn.className = `filter-btn px-2.5 py-1 text-xs font-bold uppercase border transition ${
+          active ? "border-white bg-[#e60012] text-white" : "border-zinc-700 bg-black text-zinc-400 hover:text-white"
+        }`;
+      });
+
+      if (state.habits.length === 0) {
+        list.innerHTML = `
+          <div class="border-2 border-dashed border-zinc-700 p-8 text-center my-2">
+            <div class="p5-font text-2xl text-[#ffd700] mb-1">TU AGENDA ESTÁ VACÍA</div>
+            <p class="text-xs text-zinc-400 max-w-md mx-auto">
+              Usa el formulario rojo de arriba para registrar tus hábitos diarios reales (ej. estudiar, entrenar, leer, meditar) y empieza a subir tus estadísticas desde cero.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = currentFilter === "all"
+        ? state.habits
+        : state.habits.filter(h => h.stat === currentFilter);
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="text-zinc-400 text-xs italic p-4">No tienes hábitos registrados en esta estadística.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(h => {
+        const done = completedToday.includes(h.id);
+        const notes = "♪".repeat(h.points);
+        return `
+          <div class="flex items-center justify-between p-3 border-2 ${done ? 'bg-zinc-900/90 border-[#ffd700]' : 'bg-black border-white'} transition">
+            <div class="flex items-center gap-3 min-w-0 pr-2">
+              <button 
+                onclick="toggleHabit('${h.id}', event)"
+                class="w-8 h-8 shrink-0 flex items-center justify-center border-2 border-white font-bold text-lg ${done ? 'bg-[#e60012] text-white' : 'bg-zinc-900 text-transparent hover:border-[#ffd700]'}"
+              >
+                ✓
+              </button>
+              <div class="min-w-0">
+                <div class="font-bold text-sm md:text-base break-words ${done ? 'line-through text-zinc-400' : 'text-white'}">${escapeHtml(h.title)}</div>
+                <div class="text-xs uppercase font-bold text-[#ffd700]">
+                  ${STAT_META[h.stat]?.label || h.stat} <span class="ml-1">${notes}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="startEditHabit('${h.id}')" class="text-zinc-400 hover:text-[#ffd700] text-xs font-bold px-2 py-1" title="Editar">✎</button>
+              <button onclick="deleteHabit('${h.id}')" class="text-zinc-500 hover:text-[#e60012] text-sm font-bold px-2 py-1" title="Eliminar">✕</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderWeeklyChart() {
+      const container = document.getElementById("weekly-bars");
+      const dayLabels = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
+
+      let html = "";
+      for (let i = -6; i <= 0; i++) {
+        const iso = getLocalISO(i);
+        const [y, m, d] = iso.split("-").map(Number);
+        const dObj = new Date(y, m - 1, d);
+        const label = dayLabels[dObj.getDay()];
+
+        const rec = getDayRecord(iso);
+        const doneCount = rec.completed.length;
+        const denominator = i === 0 ? Math.max(1, state.habits.length) : Math.max(1, rec.totalTarget || state.habits.length);
+        const pct = state.habits.length === 0 && doneCount === 0 ? 0 : Math.min(100, Math.round((doneCount / denominator) * 100));
+        const isToday = i === 0;
+
+        html += `
+          <div class="flex flex-col items-center justify-end h-full">
+            <div class="text-[10px] font-bold ${pct === 100 ? 'text-[#ffd700]' : 'text-zinc-300'} mb-1">${pct}%</div>
+            <div class="w-full bg-zinc-900 h-20 flex items-end border border-zinc-700 p-0.5">
+              <div style="height: ${pct === 0 ? 4 : pct}%" class="w-full ${pct === 0 ? 'bg-zinc-800' : isToday ? 'bg-[#e60012]' : 'bg-white'} transition-all duration-300"></div>
+            </div>
+            <div class="p5-font text-xs mt-1 ${isToday ? 'text-[#ffd700]' : 'text-zinc-400'}">${label}</div>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+
+      // Calcular racha actual (días seguidos completando al menos 1 hábito)
+      let streak = 0;
+      for (let i = 0; i >= -3650; i--) {
+        const iso = getLocalISO(i);
+        const rec = getDayRecord(iso);
+        if (rec.completed.length > 0) {
+          streak++;
+        } else if (i < 0) {
+          break;
+        }
+      }
+
+      if (streak > (state.bestStreak || 0)) {
+        state.bestStreak = streak;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      document.getElementById("streak-counter").textContent = `🔥 RACHA: ${streak} DÍAS`;
+      document.getElementById("best-streak").textContent = `${state.bestStreak || streak} días`;
+    }
+
+    function renderAll() {
+      updateHeader();
+      renderRadar();
+      renderHabits();
+      renderWeeklyChart();
+    }
+
+    // --- ACCIONES DE USUARIO ---
+    function spawnFloatingNote(x, y, points) {
+      const el = document.createElement("div");
+      el.className = "note-float";
+      el.style.left = `${ (x || window.innerWidth / 2) - 20 }px`;
+      el.style.top = `${ (y || window.innerHeight / 2) - 20 }px`;
+      el.textContent = `¡${"♪".repeat(points)}!`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 850);
+    }
+
+    function toggleHabit(id, ev) {
+      const today = getLocalISO(0);
+      const habit = state.habits.find(h => h.id === id);
+      if (!habit) return;
+
+      const rec = getDayRecord(today);
+      const idx = rec.completed.indexOf(id);
+      const prevRank = getRankIndex(state.stats[habit.stat] || 0);
+
+      if (idx === -1) {
+        rec.completed.push(id);
+        state.stats[habit.stat] = (state.stats[habit.stat] || 0) + habit.points;
+        const newRank = getRankIndex(state.stats[habit.stat]);
+
+        if (newRank > prevRank) {
+          showRankUpBanner(habit.stat, newRank);
+        } else {
+          playNoteSound(habit.points, false);
+        }
+        if (ev) spawnFloatingNote(ev.clientX, ev.clientY, habit.points);
+      } else {
+        rec.completed.splice(idx, 1);
+        state.stats[habit.stat] = Math.max(0, (state.stats[habit.stat] || 0) - habit.points);
+      }
+
+      rec.totalTarget = state.habits.length;
+      state.history[today] = rec;
+      saveState();
+    }
+
+    function startEditHabit(id) {
+      const habit = state.habits.find(h => h.id === id);
+      if (!habit) return;
+      document.getElementById("edit-habit-id").value = habit.id;
+      document.getElementById("habit-title").value = habit.title;
+      document.getElementById("habit-stat").value = habit.stat;
+      document.getElementById("habit-points").value = String(habit.points);
+      document.getElementById("form-title").textContent = "✎ EDITAR HÁBITO";
+      document.getElementById("cancel-edit-btn").classList.remove("hidden");
+      document.getElementById("habit-title").focus();
+    }
+
+    function cancelEdit() {
+      document.getElementById("edit-habit-id").value = "";
+      document.getElementById("habit-title").value = "";
+      document.getElementById("form-title").textContent = "+ NUEVO HÁBITO DIARIO";
+      document.getElementById("cancel-edit-btn").classList.add("hidden");
+    }
+
+    function deleteHabit(id) {
+      const habit = state.habits.find(h => h.id === id);
+      if (!habit) return;
+      if (!confirm(`¿Seguro que quieres eliminar el hábito "${habit.title}"? (Tus puntos ganados se mantendrán)`)) return;
+
+      state.habits = state.habits.filter(h => h.id !== id);
+      const today = getLocalISO(0);
+      if (state.history[today]) {
+        state.history[today].totalTarget = state.habits.length;
+      }
+      if (document.getElementById("edit-habit-id").value === id) cancelEdit();
+      saveState();
+    }
+
+    function setFilter(filterKey) {
+      currentFilter = filterKey;
+      renderHabits();
+    }
+
+    document.getElementById("habit-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const editId = document.getElementById("edit-habit-id").value;
+      const titleInput = document.getElementById("habit-title");
+      const statInput = document.getElementById("habit-stat");
+      const pointsInput = document.getElementById("habit-points");
+
+      const title = titleInput.value.trim();
+      if (!title) return;
+
+      if (editId) {
+        const existing = state.habits.find(h => h.id === editId);
+        if (existing) {
+          existing.title = title;
+          existing.stat = statInput.value;
+          existing.points = Number(pointsInput.value);
+        }
+        cancelEdit();
+      } else {
+        state.habits.push({
+          id: "h_" + Date.now(),
+          title,
+          stat: statInput.value,
+          points: Number(pointsInput.value)
+        });
+        titleInput.value = "";
+      }
+
+      const today = getLocalISO(0);
+      if (state.history[today]) {
+        state.history[today].totalTarget = state.habits.length;
+      }
+      saveState();
+    });
+
+    // --- MODAL Y COPIAS DE SEGURIDAD ---
+    function openSettingsModal() {
+      document.getElementById("settings-modal").classList.remove("hidden");
+      document.getElementById("settings-modal").classList.add("flex");
+    }
+
+    function closeSettingsModal() {
+      document.getElementById("settings-modal").classList.add("hidden");
+      document.getElementById("settings-modal").classList.remove("flex");
+    }
+
+    function exportBackup() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `phantom-habits-${getLocalISO(0)}.json`;
+      a.click();
+    }
+
+    function importBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported && imported.stats && Array.isArray(imported.habits)) {
+            state = { ...createCleanState(), ...imported };
+            saveState();
+            closeSettingsModal();
+            alert("¡Copia de seguridad restaurada con éxito!");
+          } else {
+            alert("El archivo no tiene el formato correcto.");
+          }
+        } catch {
+          alert("Error al leer el archivo JSON.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetAllData() {
+      if (!confirm("⚠️ ¿Estás seguro de que quieres BORRAR TODOS TUS DATOS y empezar desde cero? Esta acción no se puede deshacer.")) return;
+      state = createCleanState();
+      saveState();
+      closeSettingsModal();
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    // Inicializar y vigilar cambio de medianoche si queda abierta la app
+    renderAll();
+    setInterval(() => {
+      updateHeader();
+    }, 60000);
+  </script>
+</body>
+</html>
