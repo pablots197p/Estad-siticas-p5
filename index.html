@@ -6,266 +6,791 @@
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>PHANTOM HABITS // Registro Diario</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <meta name="description" content="PHANTOM HABITS - Rastreador de hábitos diarios estilo RPG con parámetros sociales y rachas." />
+  <title>PHANTOM HABITS // RPG Habit Tracker</title>
   <style>
     :root {
-      --p5-red: #e60012;
-      --p5-black: #0a0a0a;
-      --p5-gold: #ffd700;
+      --rebel-red: #e60012;
+      --rebel-black: #0a0a0a;
+      --rebel-gold: #ffd700;
+      --rebel-panel: #111111;
+      --rebel-gray: #222222;
+      --rebel-muted: #9ca3af;
     }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      background-color: var(--p5-black);
+      background-color: var(--rebel-black);
       background-image: 
         radial-gradient(circle at 15% 15%, rgba(230, 0, 18, 0.22) 0%, transparent 45%),
         radial-gradient(circle at 85% 85%, rgba(230, 0, 18, 0.18) 0%, transparent 50%),
         repeating-linear-gradient(45deg, #111 0px, #111 10px, #0a0a0a 10px, #0a0a0a 20px);
-      color: #fff;
-      font-family: 'Space Grotesk', sans-serif;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      padding: 16px 14px 64px 14px;
       overflow-x: hidden;
-      -webkit-tap-highlight-color: transparent;
     }
-    .p5-font {
-      font-family: 'Anton', sans-serif;
+
+    @media (min-width: 768px) {
+      body {
+        padding: 32px 28px 64px 28px;
+      }
+    }
+
+    .rebel-font {
+      font-family: 'Impact', 'Arial Black', 'Franklin Gothic Heavy', sans-serif;
       letter-spacing: 0.05em;
       text-transform: uppercase;
+      font-weight: 900;
     }
-    .p5-box {
-      background: #0f0f0f;
-      border: 3px solid #fff;
-      box-shadow: 6px 6px 0px var(--p5-red);
-      transform: skew(-1.5deg);
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
     }
-    .p5-box-red {
-      background: var(--p5-red);
-      border: 3px solid #000;
-      box-shadow: 6px 6px 0px #fff;
-      transform: skew(1.5deg);
+
+    /* HEADER */
+    .app-header {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 28px;
     }
-    .p5-btn {
+
+    @media (min-width: 640px) {
+      .app-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .date-badge {
+      background: var(--rebel-red);
+      border: 4px solid #fff;
+      padding: 8px 14px;
+      transform: rotate(-3deg);
+      box-shadow: 6px 6px 0 #000;
+      flex-shrink: 0;
+    }
+
+    .date-num {
+      font-size: 1.9rem;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .date-day {
+      font-size: 0.78rem;
+      background: #000;
+      color: #fff;
+      padding: 2px 6px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .app-title {
+      font-size: 2.1rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      text-shadow: 4px 4px 0 var(--rebel-red);
+      line-height: 1.05;
+    }
+
+    @media (min-width: 768px) {
+      .app-title {
+        font-size: 2.8rem;
+      }
+    }
+
+    .subtitle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .slot-pill {
       background: #fff;
       color: #000;
-      font-family: 'Anton', sans-serif;
+      font-weight: 800;
+      font-size: 0.72rem;
+      padding: 2px 8px;
       text-transform: uppercase;
-      padding: 0.45rem 0.9rem;
+      transform: skewX(-12deg);
+      border: 1px solid #000;
+    }
+
+    .active-days-text {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--rebel-gold);
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-self: flex-end;
+    }
+
+    @media (min-width: 640px) {
+      .header-actions {
+        align-self: auto;
+      }
+    }
+
+    /* GRID PRINCIPAL */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+
+    @media (min-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 5fr 7fr;
+        gap: 30px;
+      }
+    }
+
+    .col-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* CAJAS Y BOTONES REBEL */
+    .rebel-box {
+      background: var(--rebel-panel);
+      border: 3px solid #fff;
+      box-shadow: 6px 6px 0 var(--rebel-red);
+      transform: skew(-1.2deg);
+      padding: 20px;
+      position: relative;
+    }
+
+    .rebel-box-red {
+      background: var(--rebel-red);
+      border: 3px solid #000;
+      box-shadow: 6px 6px 0 #fff;
+      transform: skew(1.2deg);
+      padding: 20px;
+    }
+
+    .rebel-btn {
+      background: #fff;
+      color: #000;
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      padding: 8px 14px;
       border: 2px solid #000;
-      box-shadow: 4px 4px 0px var(--p5-red);
+      box-shadow: 4px 4px 0 var(--rebel-red);
       transform: skew(-6deg);
-      transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
       cursor: pointer;
       user-select: none;
+      transition: transform 0.1s, background 0.15s;
     }
-    .p5-btn:hover {
-      background: var(--p5-gold);
+
+    .rebel-btn:hover {
+      background: var(--rebel-gold);
     }
-    .p5-btn:active {
+
+    .rebel-btn:active {
       transform: skew(-6deg) translate(2px, 2px);
-      box-shadow: 2px 2px 0px var(--p5-red);
+      box-shadow: 2px 2px 0 var(--rebel-red);
     }
+
+    .rebel-btn-gold {
+      background: var(--rebel-gold);
+    }
+
+    .section-tag {
+      background: #fff;
+      color: #000;
+      font-size: 1.15rem;
+      padding: 4px 12px;
+      display: inline-block;
+      transform: skewX(-12deg);
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0 var(--rebel-red);
+    }
+
+    .section-tag-red {
+      background: var(--rebel-red);
+      color: #fff;
+      font-size: 1.15rem;
+      padding: 4px 12px;
+      display: inline-block;
+      transform: skewX(-12deg);
+      border: 2px solid #fff;
+    }
+
+    /* RADAR Y DESGLOSE */
+    .radar-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 8px 0;
+    }
+
+    #radar-svg {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      overflow: visible;
+    }
+
+    .stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid #2e2e2e;
+      padding: 8px 12px;
+    }
+
+    .stat-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      margin-bottom: 5px;
+    }
+
+    .stat-name {
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .stat-rank {
+      color: var(--rebel-gold);
+      font-weight: 800;
+      margin-left: 6px;
+    }
+
+    .stat-pts {
+      color: var(--rebel-muted);
+      font-family: monospace;
+      font-size: 0.72rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      background: #1c1c1c;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: var(--rebel-gold);
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    /* GRÁFICO SEMANAL */
+    .weekly-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .weekly-bars {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      align-items: end;
+      height: 142px;
+      padding: 22px 8px 6px 8px;
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid #2b2b2b;
+    }
+
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+    }
+
+    .bar-pct {
+      font-size: 0.65rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .bar-well {
+      width: 100%;
+      background: #1a1a1a;
+      height: 82px;
+      display: flex;
+      align-items: flex-end;
+      border: 1px solid #383838;
+      padding: 2px;
+    }
+
+    .bar-fill {
+      width: 100%;
+      transition: height 0.3s ease;
+    }
+
+    .bar-day {
+      font-size: 0.74rem;
+      margin-top: 5px;
+    }
+
+    /* FORMULARIO */
+    .form-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .form-input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .form-input-row {
+        flex-direction: row;
+      }
+    }
+
+    .text-input {
+      flex: 1;
+      background: #000;
+      color: #fff;
+      border: 2px solid #fff;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .text-input:focus {
+      border-color: var(--rebel-gold);
+    }
+
+    .picker-panel {
+      background: rgba(0, 0, 0, 0.88);
+      border: 2px solid #000;
+      padding: 12px;
+    }
+
+    .picker-hint {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #d1d5db;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .picker-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    @media (min-width: 640px) {
+      .picker-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    .stat-pick-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 6px;
+      border: 2px solid #3f3f46;
+      background: #18181b;
+      color: #a1a1aa;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.12s ease;
+    }
+
+    .stat-pick-btn.active {
+      background: var(--rebel-red);
+      border-color: var(--rebel-gold);
+      color: #fff;
+      box-shadow: 3px 3px 0 var(--rebel-gold);
+    }
+
+    /* FILTROS Y LISTA DE HÁBITOS */
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .filter-btn {
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      border: 1px solid #3f3f46;
+      background: #000;
+      color: #a1a1aa;
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      border-color: #fff;
+      background: var(--rebel-red);
+      color: #fff;
+    }
+
+    .habits-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .habit-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border: 2px solid #fff;
+      background: #000;
+      transition: all 0.15s ease;
+    }
+
+    .habit-item.done {
+      background: rgba(24, 24, 27, 0.92);
+      border-color: var(--rebel-gold);
+    }
+
+    .habit-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      padding-right: 8px;
+    }
+
+    .check-btn {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      background: #18181b;
+      color: transparent;
+      font-weight: 900;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .check-btn.done {
+      background: var(--rebel-red);
+      color: #fff;
+    }
+
+    .habit-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #fff;
+      word-break: break-word;
+    }
+
+    .habit-title.done {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+
+    .badges-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .reward-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      padding: 2px 7px;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--rebel-gold);
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    .icon-btn:hover {
+      color: var(--rebel-gold);
+    }
+
+    .icon-btn.del:hover {
+      color: var(--rebel-red);
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.86);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      max-width: 440px;
+      width: 100%;
+    }
+
+    /* ANIMACIONES FLOTANTES */
     @keyframes floatUp {
       0% { opacity: 1; transform: translateY(0) scale(1) rotate(-6deg); }
       100% { opacity: 0; transform: translateY(-48px) scale(1.25) rotate(6deg); }
     }
+
     .note-float {
       position: fixed;
       pointer-events: none;
-      color: var(--p5-gold);
-      font-family: 'Anton', sans-serif;
-      font-size: 1.5rem;
-      text-shadow: 3px 3px 0px #000, -1px -1px 0px var(--p5-red);
+      color: var(--rebel-gold);
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: 1.45rem;
+      text-shadow: 3px 3px 0 #000, -1px -1px 0 var(--rebel-red);
       animation: floatUp 0.95s ease-out forwards;
       z-index: 9999;
       white-space: nowrap;
     }
+
     @keyframes rankUpAnim {
       0% { transform: scale(0.7) skew(-5deg); opacity: 0; }
       20% { transform: scale(1.05) skew(-5deg); opacity: 1; }
       80% { transform: scale(1) skew(-5deg); opacity: 1; }
       100% { transform: scale(1.1) skew(-5deg); opacity: 0; }
     }
+
     .rank-up-banner {
       animation: rankUpAnim 2.8s ease-in-out forwards;
+      background: var(--rebel-red);
+      border: 4px solid #fff;
+      padding: 16px 24px;
+      box-shadow: 10px 10px 0 #000;
+      text-align: center;
+    }
+
+    #rank-up-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 200;
     }
   </style>
 </head>
-<body class="min-h-screen p-4 md:p-8 pb-16">
+<body>
 
-  <!-- BANNER FLOTANTE DE SUBIDA DE RANGO -->
-  <div id="rank-up-container" class="fixed inset-0 pointer-events-none flex flex-col items-center justify-center gap-3 z-50"></div>
+  <!-- BANNER DE SUBIDA DE RANGO -->
+  <div id="rank-up-container"></div>
 
-  <!-- CABECERA -->
-  <header class="max-w-6xl mx-auto mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-    <div class="flex items-center gap-4">
-      <div class="bg-[#e60012] border-4 border-white px-4 py-2 transform -rotate-3 shadow-[6px_6px_0_#000]">
-        <div id="p5-date" class="p5-font text-3xl md:text-4xl leading-none text-white">-- / --</div>
-        <div id="p5-day" class="p5-font text-xs md:text-sm bg-black text-white px-2 py-0.5 mt-1 inline-block">---</div>
-      </div>
-      <div>
-        <h1 class="p5-font text-3xl md:text-5xl tracking-wider text-white drop-shadow-[4px_4px_0_#e60012]">
-          PHANTOM HABITS
-        </h1>
-        <div class="flex items-center gap-2 mt-0.5">
-          <span id="p5-slot" class="inline-block bg-white text-black font-bold text-xs px-2 py-0.5 uppercase transform -skew-x-12 border border-black">
-            DÍA A DÍA
-          </span>
-          <span id="total-days-badge" class="text-xs font-bold text-[#ffd700] uppercase">
-            0 DÍAS ACTIVOS
-          </span>
+  <div class="container">
+    <!-- CABECERA -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="date-badge">
+          <div id="ui-date" class="rebel-font date-num">-- / --</div>
+          <div id="ui-day" class="rebel-font date-day">---</div>
         </div>
-      </div>
-    </div>
-
-    <!-- BOTONES DE CONTROL -->
-    <div class="flex flex-wrap items-center gap-2 self-end sm:self-auto">
-      <button onclick="toggleSound()" id="sound-btn" class="p5-btn text-xs md:text-sm">
-        🔊 SFX: ON
-      </button>
-      <button onclick="openSettingsModal()" class="p5-btn text-xs md:text-sm bg-[#ffd700]">
-        ⚙️ DATOS / BACKUP
-      </button>
-    </div>
-  </header>
-
-  <!-- CONTENIDO PRINCIPAL -->
-  <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-    <!-- COLUMNA IZQUIERDA: PARÁMETROS Y RACHA -->
-    <section class="lg:col-span-5 flex flex-col gap-6">
-      
-      <!-- ESTRELLA DE PARÁMETROS SOCIALES -->
-      <div class="p5-box p-5 relative">
-        <div class="bg-white text-black p5-font text-xl px-3 py-1 inline-block transform -skew-x-12 -mt-8 mb-2 border-2 border-black shadow-[4px_4px_0_#e60012]">
-          PARÁMETROS SOCIALES
-        </div>
-
-        <div class="flex justify-center items-center my-1">
-          <svg id="radar-svg" viewBox="0 0 300 300" class="w-full max-w-[280px] h-auto overflow-visible"></svg>
-        </div>
-
-        <!-- PROGRESO POR ESTADÍSTICA -->
-        <div id="stats-breakdown" class="grid grid-cols-1 gap-2.5 mt-2 text-xs"></div>
-      </div>
-
-      <!-- GRÁFICO DE RACHAS SEMANALES -->
-      <div class="p5-box p-5">
-        <div class="flex justify-between items-center mb-4">
-          <div class="bg-[#e60012] text-white p5-font text-xl px-3 py-1 inline-block transform -skew-x-12 border-2 border-white">
-            ÚLTIMOS 7 DÍAS
-          </div>
-          <div id="streak-counter" class="p5-font text-lg text-[#ffd700]">
-            🔥 RACHA: 0 DÍAS
+        <div>
+          <h1 class="rebel-font app-title">PHANTOM HABITS</h1>
+          <div class="subtitle-row">
+            <span id="ui-slot" class="slot-pill">DÍA A DÍA</span>
+            <span id="total-days-badge" class="active-days-text">0 DÍAS ACTIVOS</span>
           </div>
         </div>
-
-        <div id="weekly-bars" class="grid grid-cols-7 gap-2 items-end h-36 pt-6 px-2 bg-black/60 border border-zinc-800"></div>
-        <p class="text-[11px] text-zinc-400 mt-2 text-right">
-          Mejor racha histórica: <span id="best-streak" class="text-white font-bold">0 días</span>
-        </p>
       </div>
-    </section>
 
-    <!-- COLUMNA DERECHA: MISIONES DIARIAS -->
-    <section class="lg:col-span-7 flex flex-col gap-6">
-      
-      <!-- AÑADIR / EDITAR HÁBITO (MULTI-ESTADÍSTICA) -->
-      <div class="p5-box-red p-5">
-        <div class="flex justify-between items-center mb-3">
-          <h2 id="form-title" class="p5-font text-2xl text-white drop-shadow-[2px_2px_0_#000]">
-            + NUEVO HÁBITO DIARIO
-          </h2>
-          <button id="cancel-edit-btn" type="button" onclick="cancelEdit()" class="hidden text-xs bg-black text-white px-2.5 py-1 font-bold uppercase border border-white hover:bg-zinc-900">
-            ✕ Cancelar edición
-          </button>
+      <div class="header-actions">
+        <button onclick="toggleSound()" id="sound-btn" class="rebel-btn">🔊 SFX: ON</button>
+        <button onclick="openSettingsModal()" class="rebel-btn rebel-btn-gold">⚙️ DATOS / BACKUP</button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-grid">
+
+      <!-- COLUMNA IZQUIERDA: ESTADÍSTICAS Y RACHAS -->
+      <section class="col-stack">
+        <div class="rebel-box">
+          <div style="margin-top: -32px; margin-bottom: 10px;">
+            <span class="rebel-font section-tag">PARÁMETROS SOCIALES</span>
+          </div>
+
+          <div class="radar-wrap">
+            <svg id="radar-svg" viewBox="0 0 300 300"></svg>
+          </div>
+
+          <div id="stats-breakdown" class="stats-list"></div>
         </div>
 
-        <form id="habit-form" class="space-y-3">
-          <input type="hidden" id="edit-habit-id" value="" />
-          
-          <div class="flex flex-col sm:flex-row gap-2.5">
-            <input 
-              id="habit-title" 
-              type="text" 
-              required
-              maxlength="70"
-              placeholder="Ej. Entrenar escuchando un audiolibro..." 
-              class="flex-1 bg-black text-white border-2 border-white px-3 py-2 text-sm focus:outline-none focus:border-[#ffd700]"
-            />
-            <button type="submit" id="submit-habit-btn" class="p5-btn px-6 py-2 text-base shrink-0">
-              GUARDAR
+        <div class="rebel-box">
+          <div class="weekly-header">
+            <span class="rebel-font section-tag-red">ÚLTIMOS 7 DÍAS</span>
+            <div id="streak-counter" class="rebel-font" style="font-size: 1.15rem; color: var(--rebel-gold);">
+              🔥 RACHA: 0 DÍAS
+            </div>
+          </div>
+
+          <div id="weekly-bars" class="weekly-bars"></div>
+          <p style="font-size: 0.7rem; color: var(--rebel-muted); margin-top: 8px; text-align: right;">
+            Mejor racha histórica: <span id="best-streak" style="color: #fff; font-weight: 800;">0 días</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- COLUMNA DERECHA: HÁBITOS DIARIOS -->
+      <section class="col-stack">
+        <div class="rebel-box-red">
+          <div class="form-top">
+            <h2 id="form-title" class="rebel-font" style="font-size: 1.5rem; text-shadow: 2px 2px 0 #000;">
+              + NUEVO HÁBITO DIARIO
+            </h2>
+            <button id="cancel-edit-btn" type="button" onclick="cancelEdit()" style="display: none; background: #000; color: #fff; border: 1px solid #fff; padding: 4px 8px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; cursor: pointer;">
+              ✕ Cancelar edición
             </button>
           </div>
 
-          <!-- SELECTOR MULTI-ESTADÍSTICA -->
-          <div class="bg-black/85 border-2 border-black p-3">
-            <div class="flex justify-between items-center mb-2">
-              <span class="text-[11px] font-bold uppercase text-zinc-300">
+          <form id="habit-form">
+            <input type="hidden" id="edit-habit-id" value="" />
+            <div class="form-input-row">
+              <input
+                id="habit-title"
+                type="text"
+                required
+                maxlength="70"
+                placeholder="Ej. Entrenar escuchando un audiolibro..."
+                class="text-input"
+              />
+              <button type="submit" class="rebel-btn" style="padding: 10px 22px; font-size: 1rem;">
+                GUARDAR
+              </button>
+            </div>
+
+            <div class="picker-panel">
+              <span class="picker-hint">
                 Toca una o varias estadísticas para asignar notas (♪ → ♪♪ → ♪♪♪):
               </span>
+              <div id="multi-stat-picker" class="picker-grid"></div>
             </div>
-            <div id="multi-stat-picker" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
-          </div>
-        </form>
-      </div>
-
-      <!-- LISTA DE MISIONES DE HOY -->
-      <div class="p5-box p-5 flex-1 flex flex-col">
-        <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
-          <div class="bg-white text-black p5-font text-xl px-3 py-1 transform -skew-x-12 border-2 border-black shadow-[4px_4px_0_#e60012]">
-            OBJETIVOS DE HOY
-          </div>
-          <div id="daily-progress-text" class="p5-font text-lg text-white">
-            0 / 0 COMPLETADOS
-          </div>
+          </form>
         </div>
 
-        <!-- FILTRO POR ESTADÍSTICA -->
-        <div id="filter-tabs" class="flex flex-wrap gap-1.5 mb-4">
-          <button onclick="setFilter('all')" data-filter="all" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-white bg-[#e60012] text-white">Todos</button>
-          <button onclick="setFilter('conocimiento')" data-filter="conocimiento" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Conocimiento</button>
-          <button onclick="setFilter('coraje')" data-filter="coraje" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Coraje</button>
-          <button onclick="setFilter('destreza')" data-filter="destreza" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Destreza</button>
-          <button onclick="setFilter('gentileza')" data-filter="gentileza" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Gentileza</button>
-          <button onclick="setFilter('encanto')" data-filter="encanto" class="filter-btn px-2.5 py-1 text-xs font-bold uppercase border border-zinc-700 bg-black text-zinc-300">Encanto</button>
+        <div class="rebel-box" style="flex: 1;">
+          <div class="weekly-header" style="margin-bottom: 16px;">
+            <span class="rebel-font section-tag">OBJETIVOS DE HOY</span>
+            <div id="daily-progress-text" class="rebel-font" style="font-size: 1.15rem;">
+              0 / 0 COMPLETADOS
+            </div>
+          </div>
+
+          <div id="filter-tabs" class="filter-row">
+            <button onclick="setFilter('all')" data-filter="all" class="filter-btn active">Todos</button>
+            <button onclick="setFilter('conocimiento')" data-filter="conocimiento" class="filter-btn">Conocimiento</button>
+            <button onclick="setFilter('coraje')" data-filter="coraje" class="filter-btn">Coraje</button>
+            <button onclick="setFilter('destreza')" data-filter="destreza" class="filter-btn">Destreza</button>
+            <button onclick="setFilter('gentileza')" data-filter="gentileza" class="filter-btn">Gentileza</button>
+            <button onclick="setFilter('encanto')" data-filter="encanto" class="filter-btn">Encanto</button>
+          </div>
+
+          <div id="habits-list" class="habits-container"></div>
         </div>
+      </section>
 
-        <div id="habits-list" class="space-y-3 flex-1"></div>
-      </div>
-
-    </section>
-  </main>
+    </main>
+  </div>
 
   <!-- MODAL DE DATOS Y COPIA DE SEGURIDAD -->
-  <div id="settings-modal" class="fixed inset-0 bg-black/85 hidden items-center justify-center p-4 z-50">
-    <div class="p5-box max-w-md w-full p-6 relative">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="p5-font text-2xl text-[#ffd700]">GESTIÓN DE DATOS</h3>
-        <button onclick="closeSettingsModal()" class="text-white font-bold text-xl hover:text-[#e60012]">✕</button>
+  <div id="settings-modal" class="modal-backdrop">
+    <div class="rebel-box modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h3 class="rebel-font" style="font-size: 1.5rem; color: var(--rebel-gold);">GESTIÓN DE DATOS</h3>
+        <button onclick="closeSettingsModal()" style="background: none; border: none; color: #fff; font-size: 1.3rem; font-weight: 900; cursor: pointer;">✕</button>
       </div>
 
-      <p class="text-xs text-zinc-300 mb-4 leading-relaxed">
-        Tus datos se guardan automáticamente en este dispositivo. Descarga una copia de seguridad (`.json`) de vez en cuando para conservar tu progreso a salvo.
+      <p style="font-size: 0.78rem; color: #d1d5db; line-height: 1.5; margin-bottom: 16px;">
+        Tus datos se guardan 100% en tu dispositivo sin conexión a internet. Descarga una copia de seguridad (`.json`) cuando quieras conservar un respaldo externo.
       </p>
 
-      <div class="space-y-3">
-        <button onclick="exportBackup()" class="p5-btn w-full text-sm flex items-center justify-center gap-2 bg-[#ffd700]">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button onclick="exportBackup()" class="rebel-btn rebel-btn-gold" style="width: 100%; text-align: center;">
           ⬇ DESCARGAR COPIA DE SEGURIDAD (.JSON)
         </button>
 
-        <label class="p5-btn w-full text-sm flex items-center justify-center gap-2 cursor-pointer bg-white">
+        <label class="rebel-btn" style="width: 100%; text-align: center; display: block;">
           ⬆ RESTAURAR COPIA DE SEGURIDAD (.JSON)
-          <input type="file" accept=".json" onchange="importBackup(event)" class="hidden" />
+          <input type="file" accept=".json" onchange="importBackup(event)" style="display: none;" />
         </label>
       </div>
 
-      <hr class="border-zinc-800 my-5" />
+      <hr style="border: 0; border-top: 1px solid #27272a; margin: 20px 0;" />
 
-      <div class="bg-zinc-950 border border-red-900/60 p-3">
-        <div class="text-xs font-bold text-red-400 uppercase mb-1">Zona de peligro</div>
-        <p class="text-[11px] text-zinc-400 mb-3">
-          Si quieres borrar todos los hábitos, rachas y devolver las estadísticas a 0 para empezar de cero:
+      <div style="background: #09090b; border: 1px solid rgba(185, 28, 28, 0.6); padding: 12px;">
+        <div style="font-size: 0.75rem; font-weight: 800; color: #f87171; text-transform: uppercase; margin-bottom: 4px;">Zona de reinicio</div>
+        <p style="font-size: 0.7rem; color: #9ca3af; margin-bottom: 10px;">
+          Borra todos los hábitos, rachas y devuelve las estadísticas a 0 para empezar una partida desde cero:
         </p>
-        <button onclick="resetAllData()" class="bg-red-700 hover:bg-red-600 text-white font-bold text-xs px-3 py-2 uppercase w-full border border-white">
+        <button onclick="resetAllData()" style="background: #b91c1c; color: #fff; font-weight: 800; font-size: 0.75rem; padding: 8px 12px; text-transform: uppercase; width: 100%; border: 1px solid #fff; cursor: pointer;">
           🗑️ BORRAR TODO Y EMPEZAR DE CERO
         </button>
       </div>
@@ -275,11 +800,11 @@
   <script>
     const STORAGE_KEY = "p5_phantom_habits_prod_v1";
 
-    // Curva de progresión para largo plazo (Puntos necesarios para cada nivel del 1 al 5)
-    // Nv.1: 0 | Nv.2: 30 | Nv.3: 90 | Nv.4: 200 | Nv.5 (MAX): 400
+    // Curva de progresión de largo plazo (Puntos para Nv.1 a Nv.5)
     const RANK_THRESHOLDS = [0, 30, 90, 200, 400];
     const MAX_STAT_POINTS = 400;
 
+    // Títulos de rango exactos de la traducción oficial en español
     const STAT_META = {
       conocimiento: { label: "Conocimiento", ranks: ["Despistado", "Informado", "Sabio", "Erudito", "Enciclopédico"] },
       coraje:       { label: "Coraje",       ranks: ["Tímido", "Ordinario", "Decidido", "Intrépido", "Corazón de León"] },
@@ -289,11 +814,8 @@
     };
 
     const STAT_KEYS = Object.keys(STAT_META);
-
-    // Estado temporal del selector multi-estadística en el formulario
     let formRewards = { conocimiento: 2, coraje: 0, destreza: 0, gentileza: 0, encanto: 0 };
 
-    // Fecha local exacta YYYY-MM-DD
     function getLocalISO(offsetDays = 0) {
       const d = new Date();
       d.setDate(d.getDate() + offsetDays);
@@ -314,15 +836,10 @@
       };
     }
 
-    // Normaliza un hábito antiguo (stat + points) al nuevo formato multi-estadística (rewards: { stat: points })
     function normalizeHabit(h) {
-      if (h.rewards && typeof h.rewards === "object") {
-        return h;
-      }
+      if (h.rewards && typeof h.rewards === "object") return h;
       const rewards = {};
-      if (h.stat) {
-        rewards[h.stat] = Number(h.points) || 1;
-      }
+      if (h.stat) rewards[h.stat] = Number(h.points) || 1;
       return {
         id: h.id || ("h_" + Date.now()),
         title: h.title || "Hábito",
@@ -355,7 +872,6 @@
       renderAll();
     }
 
-    // --- SELECTOR MULTI-ESTADÍSTICA EN EL FORMULARIO ---
     function renderMultiStatPicker() {
       const container = document.getElementById("multi-stat-picker");
       container.innerHTML = STAT_KEYS.map(key => {
@@ -366,14 +882,10 @@
           <button
             type="button"
             onclick="cycleFormStat('${key}')"
-            class="flex flex-col items-center justify-center py-2 px-2 border-2 transition select-none ${
-              active
-                ? 'bg-[#e60012] border-[#ffd700] text-white shadow-[3px_3px_0_#ffd700]'
-                : 'bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-white hover:text-white'
-            }"
+            class="stat-pick-btn ${active ? 'active' : ''}"
           >
-            <span class="text-[11px] font-bold uppercase tracking-wide">${STAT_META[key].label}</span>
-            <span class="p5-font text-base mt-0.5 ${active ? 'text-[#ffd700]' : 'text-zinc-500'}">${notes}</span>
+            <span style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase;">${STAT_META[key].label}</span>
+            <span class="rebel-font" style="font-size: 1rem; margin-top: 2px; color: ${active ? 'var(--rebel-gold)' : '#71717a'};">${notes}</span>
           </button>
         `;
       }).join("");
@@ -381,7 +893,7 @@
 
     function cycleFormStat(key) {
       const current = formRewards[key] || 0;
-      formRewards[key] = (current + 1) % 4; // 0 -> 1 -> 2 -> 3 -> 0
+      formRewards[key] = (current + 1) % 4;
       renderMultiStatPicker();
     }
 
@@ -391,7 +903,6 @@
       renderMultiStatPicker();
     }
 
-    // --- NIVELES Y PROGRESIÓN ---
     function getRankIndex(points) {
       for (let i = RANK_THRESHOLDS.length - 1; i >= 0; i--) {
         if (points >= RANK_THRESHOLDS[i]) return i;
@@ -405,7 +916,6 @@
       return RANK_THRESHOLDS[idx + 1];
     }
 
-    // --- EFECTOS DE SONIDO ---
     function playNoteSound(points = 1, isRankUp = false) {
       if (!state.soundEnabled) return;
       try {
@@ -437,28 +947,27 @@
       const container = document.getElementById("rank-up-container");
       const meta = STAT_META[statKey];
       const banner = document.createElement("div");
-      banner.className = "rank-up-banner bg-[#e60012] border-4 border-white px-6 py-4 shadow-[10px_10px_0_#000] text-center";
+      banner.className = "rank-up-banner";
       banner.innerHTML = `
-        <div class="p5-font text-sm bg-black text-[#ffd700] px-2 py-0.5 inline-block mb-1">¡SUBIDA DE RANGO!</div>
-        <div class="p5-font text-3xl text-white tracking-wider">${meta.label.toUpperCase()} ★${newRankIndex + 1}</div>
-        <div class="font-bold text-sm text-[#ffd700] uppercase mt-1">"${meta.ranks[newRankIndex]}"</div>
+        <div class="rebel-font" style="font-size: 0.85rem; background: #000; color: var(--rebel-gold); padding: 2px 8px; display: inline-block; margin-bottom: 4px;">¡SUBIDA DE RANGO!</div>
+        <div class="rebel-font" style="font-size: 1.9rem; color: #fff;">${meta.label.toUpperCase()} ★${newRankIndex + 1}</div>
+        <div style="font-weight: 800; font-size: 0.85rem; color: var(--rebel-gold); text-transform: uppercase; margin-top: 4px;">"${meta.ranks[newRankIndex]}"</div>
       `;
       container.appendChild(banner);
       setTimeout(() => banner.remove(), 2800);
     }
 
-    // --- RENDERIZADO ---
     function updateHeader() {
       const now = new Date();
       const m = String(now.getMonth() + 1).padStart(2, "0");
       const d = String(now.getDate()).padStart(2, "0");
       const days = ["DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"];
-      document.getElementById("p5-date").textContent = `${d} / ${m}`;
-      document.getElementById("p5-day").textContent = days[now.getDay()];
+      document.getElementById("ui-date").textContent = `${d} / ${m}`;
+      document.getElementById("ui-day").textContent = days[now.getDay()];
 
       const hour = now.getHours();
-      document.getElementById("p5-slot").textContent =
-        hour < 6 ? "MADRUGADA" : hour < 13 ? "MAÑANA" : hour < 20 ? "TARDE" : "NOCHE (LEBLANC)";
+      document.getElementById("ui-slot").textContent =
+        hour < 6 ? "MADRUGADA" : hour < 13 ? "MAÑANA" : hour < 20 ? "DESPUÉS DE CLASES" : "NOCHE";
 
       document.getElementById("sound-btn").textContent = state.soundEnabled ? "🔊 SFX: ON" : "🔇 SFX: OFF";
 
@@ -468,7 +977,7 @@
 
     function renderRadar() {
       const svg = document.getElementById("radar-svg");
-      const cx = 150, cy = 150, maxR = 98;
+      const cx = 150, cy = 150, maxR = 96;
       const levels = [0.2, 0.4, 0.6, 0.8, 1.0];
 
       let html = "";
@@ -485,14 +994,14 @@
         const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
         const x2 = cx + Math.cos(angle) * maxR;
         const y2 = cy + Math.sin(angle) * maxR;
-        const lx = cx + Math.cos(angle) * (maxR + 32);
+        const lx = cx + Math.cos(angle) * (maxR + 34);
         const ly = cy + Math.sin(angle) * (maxR + 22);
         const val = state.stats[key] || 0;
         const rankLvl = getRankIndex(val) + 1;
 
         html += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#444" stroke-dasharray="3,3" />`;
         html += `
-          <text x="${lx}" y="${ly}" fill="#fff" font-family="Anton" font-size="12.5" text-anchor="middle" dominant-baseline="middle">
+          <text x="${lx}" y="${ly}" fill="#fff" font-family="Impact, Arial Black, sans-serif" font-size="12" text-anchor="middle" dominant-baseline="middle">
             ${STAT_META[key].label.toUpperCase()} ★${rankLvl}
           </text>
         `;
@@ -526,18 +1035,18 @@
         const barPct = rIdx >= 4 ? 100 : Math.min(100, Math.round(((pts - curFloor) / (nextPts - curFloor)) * 100));
 
         return `
-          <div class="bg-black/90 border border-zinc-800 px-3 py-2">
-            <div class="flex items-center justify-between mb-1">
+          <div class="stat-card">
+            <div class="stat-card-top">
               <div>
-                <span class="font-bold text-white uppercase">${STAT_META[key].label}</span>
-                <span class="text-[#ffd700] ml-1.5 font-bold">Nv.${rIdx + 1} (${STAT_META[key].ranks[rIdx]})</span>
+                <span class="stat-name">${STAT_META[key].label}</span>
+                <span class="stat-rank">Nv.${rIdx + 1} (${STAT_META[key].ranks[rIdx]})</span>
               </div>
-              <div class="text-zinc-400 font-mono text-[11px]">
+              <div class="stat-pts">
                 ${rIdx >= 4 ? `${pts} ♪ (MÁX)` : `${pts} /${nextPts} ♪`}
               </div>
             </div>
-            <div class="w-full bg-zinc-900 h-1.5 overflow-hidden">
-              <div class="bg-[#ffd700] h-full transition-all duration-300" style="width: ${barPct}%"></div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: ${barPct}%"></div>
             </div>
           </div>
         `;
@@ -566,17 +1075,15 @@
 
       document.querySelectorAll(".filter-btn").forEach(btn => {
         const active = btn.dataset.filter === currentFilter;
-        btn.className = `filter-btn px-2.5 py-1 text-xs font-bold uppercase border transition ${
-          active ? "border-white bg-[#e60012] text-white" : "border-zinc-700 bg-black text-zinc-400 hover:text-white"
-        }`;
+        btn.className = `filter-btn ${active ? 'active' : ''}`;
       });
 
       if (state.habits.length === 0) {
         list.innerHTML = `
-          <div class="border-2 border-dashed border-zinc-700 p-8 text-center my-2">
-            <div class="p5-font text-2xl text-[#ffd700] mb-1">TU AGENDA ESTÁ VACÍA</div>
-            <p class="text-xs text-zinc-400 max-w-md mx-auto">
-              Usa el formulario de arriba para registrar tus hábitos diarios. Puedes activar varias estadísticas en un mismo hábito tocando sus botones.
+          <div style="border: 2px dashed #3f3f46; padding: 28px 16px; text-align: center; margin: 8px 0;">
+            <div class="rebel-font" style="font-size: 1.4rem; color: var(--rebel-gold); margin-bottom: 6px;">TU AGENDA ESTÁ VACÍA</div>
+            <p style="font-size: 0.78rem; color: #9ca3af; max-width: 400px; margin: 0 auto; line-height: 1.4;">
+              Usa el panel superior para registrar tus objetivos diarios. Puedes activar varias estadísticas en un mismo hábito.
             </p>
           </div>
         `;
@@ -588,7 +1095,7 @@
         : state.habits.filter(h => h.rewards && h.rewards[currentFilter] > 0);
 
       if (filtered.length === 0) {
-        list.innerHTML = `<div class="text-zinc-400 text-xs italic p-4">No tienes hábitos que suban esta estadística.</div>`;
+        list.innerHTML = `<div style="color: #9ca3af; font-size: 0.78rem; font-style: italic; padding: 14px;">No tienes hábitos que suban esta estadística.</div>`;
         return;
       }
 
@@ -597,30 +1104,23 @@
         const rewardBadges = STAT_KEYS
           .filter(k => h.rewards && h.rewards[k] > 0)
           .map(k => `
-            <span class="inline-flex items-center gap-1 bg-zinc-900 border border-zinc-700 px-2 py-0.5 text-[11px] uppercase font-bold text-[#ffd700]">
+            <span class="reward-badge">
               ${STAT_META[k].label} <span>${"♪".repeat(h.rewards[k])}</span>
             </span>
           `).join("");
 
         return `
-          <div class="flex items-center justify-between p-3 border-2 ${done ? 'bg-zinc-900/90 border-[#ffd700]' : 'bg-black border-white'} transition">
-            <div class="flex items-center gap-3 min-w-0 pr-2">
-              <button 
-                onclick="toggleHabit('${h.id}', event)"
-                class="w-8 h-8 shrink-0 flex items-center justify-center border-2 border-white font-bold text-lg ${done ? 'bg-[#e60012] text-white' : 'bg-zinc-900 text-transparent hover:border-[#ffd700]'}"
-              >
-                ✓
-              </button>
-              <div class="min-w-0">
-                <div class="font-bold text-sm md:text-base break-words ${done ? 'line-through text-zinc-400' : 'text-white'}">${escapeHtml(h.title)}</div>
-                <div class="flex flex-wrap gap-1.5 mt-1">
-                  ${rewardBadges}
-                </div>
+          <div class="habit-item ${done ? 'done' : ''}">
+            <div class="habit-left">
+              <button onclick="toggleHabit('${h.id}', event)" class="check-btn ${done ? 'done' : ''}">✓</button>
+              <div style="min-width: 0;">
+                <div class="habit-title ${done ? 'done' : ''}">${escapeHtml(h.title)}</div>
+                <div class="badges-wrap">${rewardBadges}</div>
               </div>
             </div>
-            <div class="flex items-center gap-1 shrink-0">
-              <button onclick="startEditHabit('${h.id}')" class="text-zinc-400 hover:text-[#ffd700] text-xs font-bold px-2 py-1" title="Editar">✎</button>
-              <button onclick="deleteHabit('${h.id}')" class="text-zinc-500 hover:text-[#e60012] text-sm font-bold px-2 py-1" title="Eliminar">✕</button>
+            <div style="display: flex; align-items: center; gap: 2px; flex-shrink: 0;">
+              <button onclick="startEditHabit('${h.id}')" class="icon-btn" title="Editar">✎</button>
+              <button onclick="deleteHabit('${h.id}')" class="icon-btn del" title="Eliminar">✕</button>
             </div>
           </div>
         `;
@@ -645,12 +1145,12 @@
         const isToday = i === 0;
 
         html += `
-          <div class="flex flex-col items-center justify-end h-full">
-            <div class="text-[10px] font-bold ${pct === 100 ? 'text-[#ffd700]' : 'text-zinc-300'} mb-1">${pct}%</div>
-            <div class="w-full bg-zinc-900 h-20 flex items-end border border-zinc-700 p-0.5">
-              <div style="height: ${pct === 0 ? 4 : pct}%" class="w-full ${pct === 0 ? 'bg-zinc-800' : isToday ? 'bg-[#e60012]' : 'bg-white'} transition-all duration-300"></div>
+          <div class="bar-col">
+            <div class="bar-pct" style="color: ${pct === 100 ? 'var(--rebel-gold)' : '#d1d5db'};">${pct}%</div>
+            <div class="bar-well">
+              <div class="bar-fill" style="height: ${pct === 0 ? 4 : pct}%; background: ${pct === 0 ? '#27272a' : isToday ? 'var(--rebel-red)' : '#ffffff'};"></div>
             </div>
-            <div class="p5-font text-xs mt-1 ${isToday ? 'text-[#ffd700]' : 'text-zinc-400'}">${label}</div>
+            <div class="rebel-font bar-day" style="color: ${isToday ? 'var(--rebel-gold)' : '#9ca3af'};">${label}</div>
           </div>
         `;
       }
@@ -683,7 +1183,6 @@
       renderWeeklyChart();
     }
 
-    // --- ACCIONES DE USUARIO ---
     function spawnFloatingNote(x, y, text) {
       const el = document.createElement("div");
       el.className = "note-float";
@@ -722,12 +1221,8 @@
           }
         });
 
-        if (!anyRankUp) {
-          playNoteSound(totalNotes, false);
-        }
-        if (ev && floatParts.length > 0) {
-          spawnFloatingNote(ev.clientX, ev.clientY, floatParts.join("  "));
-        }
+        if (!anyRankUp) playNoteSound(totalNotes, false);
+        if (ev && floatParts.length > 0) spawnFloatingNote(ev.clientX, ev.clientY, floatParts.join("  "));
       } else {
         rec.completed.splice(idx, 1);
         entries.forEach(([statKey, pts]) => {
@@ -752,7 +1247,7 @@
       renderMultiStatPicker();
 
       document.getElementById("form-title").textContent = "✎ EDITAR HÁBITO";
-      document.getElementById("cancel-edit-btn").classList.remove("hidden");
+      document.getElementById("cancel-edit-btn").style.display = "inline-block";
       document.getElementById("habit-title").focus();
     }
 
@@ -760,7 +1255,7 @@
       document.getElementById("edit-habit-id").value = "";
       document.getElementById("habit-title").value = "";
       document.getElementById("form-title").textContent = "+ NUEVO HÁBITO DIARIO";
-      document.getElementById("cancel-edit-btn").classList.add("hidden");
+      document.getElementById("cancel-edit-btn").style.display = "none";
       resetFormRewards("conocimiento");
     }
 
@@ -771,9 +1266,7 @@
 
       state.habits = state.habits.filter(h => h.id !== id);
       const today = getLocalISO(0);
-      if (state.history[today]) {
-        state.history[today].totalTarget = state.habits.length;
-      }
+      if (state.history[today]) state.history[today].totalTarget = state.habits.length;
       if (document.getElementById("edit-habit-id").value === id) cancelEdit();
       saveState();
     }
@@ -818,21 +1311,16 @@
       }
 
       const today = getLocalISO(0);
-      if (state.history[today]) {
-        state.history[today].totalTarget = state.habits.length;
-      }
+      if (state.history[today]) state.history[today].totalTarget = state.habits.length;
       saveState();
     });
 
-    // --- MODAL Y COPIAS DE SEGURIDAD ---
     function openSettingsModal() {
-      document.getElementById("settings-modal").classList.remove("hidden");
-      document.getElementById("settings-modal").classList.add("flex");
+      document.getElementById("settings-modal").classList.add("open");
     }
 
     function closeSettingsModal() {
-      document.getElementById("settings-modal").classList.add("hidden");
-      document.getElementById("settings-modal").classList.remove("flex");
+      document.getElementById("settings-modal").classList.remove("open");
     }
 
     function exportBackup() {
@@ -880,12 +1368,9 @@
       }[m]));
     }
 
-    // Inicializar
     renderMultiStatPicker();
     renderAll();
-    setInterval(() => {
-      updateHeader();
-    }, 60000);
+    setInterval(updateHeader, 60000);
   </script>
 </body>
 </html>
