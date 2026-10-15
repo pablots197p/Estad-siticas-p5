@@ -64,18 +64,19 @@
       box-shadow: 2px 2px 0px var(--p5-red);
     }
     @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0) scale(1) rotate(-8deg); }
-      100% { opacity: 0; transform: translateY(-45px) scale(1.35) rotate(8deg); }
+      0% { opacity: 1; transform: translateY(0) scale(1) rotate(-6deg); }
+      100% { opacity: 0; transform: translateY(-48px) scale(1.25) rotate(6deg); }
     }
     .note-float {
       position: fixed;
       pointer-events: none;
       color: var(--p5-gold);
       font-family: 'Anton', sans-serif;
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       text-shadow: 3px 3px 0px #000, -1px -1px 0px var(--p5-red);
-      animation: floatUp 0.85s ease-out forwards;
+      animation: floatUp 0.95s ease-out forwards;
       z-index: 9999;
+      white-space: nowrap;
     }
     @keyframes rankUpAnim {
       0% { transform: scale(0.7) skew(-5deg); opacity: 0; }
@@ -84,14 +85,14 @@
       100% { transform: scale(1.1) skew(-5deg); opacity: 0; }
     }
     .rank-up-banner {
-      animation: rankUpAnim 2.6s ease-in-out forwards;
+      animation: rankUpAnim 2.8s ease-in-out forwards;
     }
   </style>
 </head>
 <body class="min-h-screen p-4 md:p-8 pb-16">
 
   <!-- BANNER FLOTANTE DE SUBIDA DE RANGO -->
-  <div id="rank-up-container" class="fixed inset-0 pointer-events-none flex items-center justify-center z-50"></div>
+  <div id="rank-up-container" class="fixed inset-0 pointer-events-none flex flex-col items-center justify-center gap-3 z-50"></div>
 
   <!-- CABECERA -->
   <header class="max-w-6xl mx-auto mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -109,7 +110,7 @@
             DÍA A DÍA
           </span>
           <span id="total-days-badge" class="text-xs font-bold text-[#ffd700] uppercase">
-            0 DÍAS REGISTRADOS
+            0 DÍAS ACTIVOS
           </span>
         </div>
       </div>
@@ -167,41 +168,43 @@
     <!-- COLUMNA DERECHA: MISIONES DIARIAS -->
     <section class="lg:col-span-7 flex flex-col gap-6">
       
-      <!-- AÑADIR / EDITAR HÁBITO -->
+      <!-- AÑADIR / EDITAR HÁBITO (MULTI-ESTADÍSTICA) -->
       <div class="p5-box-red p-5">
         <div class="flex justify-between items-center mb-3">
           <h2 id="form-title" class="p5-font text-2xl text-white drop-shadow-[2px_2px_0_#000]">
             + NUEVO HÁBITO DIARIO
           </h2>
-          <button id="cancel-edit-btn" onclick="cancelEdit()" class="hidden text-xs bg-black text-white px-2 py-1 font-bold uppercase border border-white">
-            Cancelar edición
+          <button id="cancel-edit-btn" type="button" onclick="cancelEdit()" class="hidden text-xs bg-black text-white px-2.5 py-1 font-bold uppercase border border-white hover:bg-zinc-900">
+            ✕ Cancelar edición
           </button>
         </div>
-        <form id="habit-form" class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+
+        <form id="habit-form" class="space-y-3">
           <input type="hidden" id="edit-habit-id" value="" />
-          <input 
-            id="habit-title" 
-            type="text" 
-            required
-            maxlength="70"
-            placeholder="Escribe tu objetivo diario..." 
-            class="sm:col-span-6 bg-black text-white border-2 border-white px-3 py-2 text-sm focus:outline-none focus:border-[#ffd700]"
-          />
-          <select id="habit-stat" class="sm:col-span-3 bg-black text-white border-2 border-white px-2 py-2 text-sm font-bold">
-            <option value="conocimiento">Conocimiento</option>
-            <option value="coraje">Coraje</option>
-            <option value="destreza">Destreza</option>
-            <option value="gentileza">Gentileza</option>
-            <option value="encanto">Encanto</option>
-          </select>
-          <select id="habit-points" class="sm:col-span-2 bg-black text-[#ffd700] border-2 border-white px-2 py-2 text-sm font-bold">
-            <option value="1">♪ (+1)</option>
-            <option value="2" selected>♪♪ (+2)</option>
-            <option value="3">♪♪♪ (+3)</option>
-          </select>
-          <button type="submit" id="submit-habit-btn" class="sm:col-span-1 p5-btn flex items-center justify-center text-base">
-            OK
-          </button>
+          
+          <div class="flex flex-col sm:flex-row gap-2.5">
+            <input 
+              id="habit-title" 
+              type="text" 
+              required
+              maxlength="70"
+              placeholder="Ej. Entrenar escuchando un audiolibro..." 
+              class="flex-1 bg-black text-white border-2 border-white px-3 py-2 text-sm focus:outline-none focus:border-[#ffd700]"
+            />
+            <button type="submit" id="submit-habit-btn" class="p5-btn px-6 py-2 text-base shrink-0">
+              GUARDAR
+            </button>
+          </div>
+
+          <!-- SELECTOR MULTI-ESTADÍSTICA -->
+          <div class="bg-black/85 border-2 border-black p-3">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-[11px] font-bold uppercase text-zinc-300">
+                Toca una o varias estadísticas para asignar notas (♪ → ♪♪ → ♪♪♪):
+              </span>
+            </div>
+            <div id="multi-stat-picker" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
+          </div>
         </form>
       </div>
 
@@ -241,7 +244,7 @@
       </div>
 
       <p class="text-xs text-zinc-300 mb-4 leading-relaxed">
-        Tus datos se guardan automáticamente en este dispositivo. Te recomendamos descargar una copia de seguridad (`.json`) de vez en cuando para no perder nunca tu progreso.
+        Tus datos se guardan automáticamente en este dispositivo. Descarga una copia de seguridad (`.json`) de vez en cuando para conservar tu progreso a salvo.
       </p>
 
       <div class="space-y-3">
@@ -287,7 +290,10 @@
 
     const STAT_KEYS = Object.keys(STAT_META);
 
-    // Fecha local exacta YYYY-MM-DD (sin desfase UTC)
+    // Estado temporal del selector multi-estadística en el formulario
+    let formRewards = { conocimiento: 2, coraje: 0, destreza: 0, gentileza: 0, encanto: 0 };
+
+    // Fecha local exacta YYYY-MM-DD
     function getLocalISO(offsetDays = 0) {
       const d = new Date();
       d.setDate(d.getDate() + offsetDays);
@@ -301,11 +307,26 @@
       return {
         stats: { conocimiento: 0, coraje: 0, destreza: 0, gentileza: 0, encanto: 0 },
         habits: [],
-        // history guarda por fecha: { completed: ["id1"], totalTarget: 5 }
         history: {},
         bestStreak: 0,
         soundEnabled: true,
         createdAt: getLocalISO(0)
+      };
+    }
+
+    // Normaliza un hábito antiguo (stat + points) al nuevo formato multi-estadística (rewards: { stat: points })
+    function normalizeHabit(h) {
+      if (h.rewards && typeof h.rewards === "object") {
+        return h;
+      }
+      const rewards = {};
+      if (h.stat) {
+        rewards[h.stat] = Number(h.points) || 1;
+      }
+      return {
+        id: h.id || ("h_" + Date.now()),
+        title: h.title || "Hábito",
+        rewards
       };
     }
 
@@ -317,9 +338,11 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return createCleanState();
         const parsed = JSON.parse(raw);
+        const habits = Array.isArray(parsed.habits) ? parsed.habits.map(normalizeHabit) : [];
         return {
           ...createCleanState(),
           ...parsed,
+          habits,
           stats: { ...createCleanState().stats, ...(parsed.stats || {}) }
         };
       } catch {
@@ -330,6 +353,42 @@
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
+    }
+
+    // --- SELECTOR MULTI-ESTADÍSTICA EN EL FORMULARIO ---
+    function renderMultiStatPicker() {
+      const container = document.getElementById("multi-stat-picker");
+      container.innerHTML = STAT_KEYS.map(key => {
+        const val = formRewards[key] || 0;
+        const active = val > 0;
+        const notes = active ? "♪".repeat(val) : "OFF";
+        return `
+          <button
+            type="button"
+            onclick="cycleFormStat('${key}')"
+            class="flex flex-col items-center justify-center py-2 px-2 border-2 transition select-none ${
+              active
+                ? 'bg-[#e60012] border-[#ffd700] text-white shadow-[3px_3px_0_#ffd700]'
+                : 'bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-white hover:text-white'
+            }"
+          >
+            <span class="text-[11px] font-bold uppercase tracking-wide">${STAT_META[key].label}</span>
+            <span class="p5-font text-base mt-0.5 ${active ? 'text-[#ffd700]' : 'text-zinc-500'}">${notes}</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function cycleFormStat(key) {
+      const current = formRewards[key] || 0;
+      formRewards[key] = (current + 1) % 4; // 0 -> 1 -> 2 -> 3 -> 0
+      renderMultiStatPicker();
+    }
+
+    function resetFormRewards(defaultStat = "conocimiento") {
+      STAT_KEYS.forEach(k => formRewards[k] = 0);
+      if (defaultStat) formRewards[defaultStat] = 2;
+      renderMultiStatPicker();
     }
 
     // --- NIVELES Y PROGRESIÓN ---
@@ -352,7 +411,7 @@
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const freqs = isRankUp ? [523.25, 659.25, 783.99, 1046.5] : [523.25, 659.25, 783.99];
-        const count = isRankUp ? 4 : points;
+        const count = isRankUp ? 4 : Math.min(4, Math.max(1, points));
         for (let i = 0; i < count; i++) {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -385,7 +444,7 @@
         <div class="font-bold text-sm text-[#ffd700] uppercase mt-1">"${meta.ranks[newRankIndex]}"</div>
       `;
       container.appendChild(banner);
-      setTimeout(() => banner.remove(), 2600);
+      setTimeout(() => banner.remove(), 2800);
     }
 
     // --- RENDERIZADO ---
@@ -439,7 +498,6 @@
         `;
       });
 
-      // Estrella proporcional al rango y progreso hacia el siguiente nivel
       const userPts = STAT_KEYS.map((key, i) => {
         const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
         const pts = state.stats[key] || 0;
@@ -459,7 +517,6 @@
       html += `<polygon points="${userPts}" fill="rgba(255, 215, 0, 0.65)" stroke="#ffd700" stroke-width="3" />`;
       svg.innerHTML = html;
 
-      // Lista de progreso de cada parámetro
       const breakdown = document.getElementById("stats-breakdown");
       breakdown.innerHTML = STAT_KEYS.map(key => {
         const pts = state.stats[key] || 0;
@@ -490,7 +547,6 @@
     function getDayRecord(isoDate) {
       const raw = state.history[isoDate];
       if (!raw) return { completed: [], totalTarget: state.habits.length };
-      // Compatibilidad por si acaso
       if (Array.isArray(raw)) return { completed: raw, totalTarget: state.habits.length };
       return {
         completed: raw.completed || [],
@@ -508,7 +564,6 @@
       document.getElementById("daily-progress-text").textContent =
         `${validCompletedCount} / ${state.habits.length} COMPLETADOS`;
 
-      // Actualizar pestañas de filtro
       document.querySelectorAll(".filter-btn").forEach(btn => {
         const active = btn.dataset.filter === currentFilter;
         btn.className = `filter-btn px-2.5 py-1 text-xs font-bold uppercase border transition ${
@@ -521,7 +576,7 @@
           <div class="border-2 border-dashed border-zinc-700 p-8 text-center my-2">
             <div class="p5-font text-2xl text-[#ffd700] mb-1">TU AGENDA ESTÁ VACÍA</div>
             <p class="text-xs text-zinc-400 max-w-md mx-auto">
-              Usa el formulario rojo de arriba para registrar tus hábitos diarios reales (ej. estudiar, entrenar, leer, meditar) y empieza a subir tus estadísticas desde cero.
+              Usa el formulario de arriba para registrar tus hábitos diarios. Puedes activar varias estadísticas en un mismo hábito tocando sus botones.
             </p>
           </div>
         `;
@@ -530,16 +585,23 @@
 
       const filtered = currentFilter === "all"
         ? state.habits
-        : state.habits.filter(h => h.stat === currentFilter);
+        : state.habits.filter(h => h.rewards && h.rewards[currentFilter] > 0);
 
       if (filtered.length === 0) {
-        list.innerHTML = `<div class="text-zinc-400 text-xs italic p-4">No tienes hábitos registrados en esta estadística.</div>`;
+        list.innerHTML = `<div class="text-zinc-400 text-xs italic p-4">No tienes hábitos que suban esta estadística.</div>`;
         return;
       }
 
       list.innerHTML = filtered.map(h => {
         const done = completedToday.includes(h.id);
-        const notes = "♪".repeat(h.points);
+        const rewardBadges = STAT_KEYS
+          .filter(k => h.rewards && h.rewards[k] > 0)
+          .map(k => `
+            <span class="inline-flex items-center gap-1 bg-zinc-900 border border-zinc-700 px-2 py-0.5 text-[11px] uppercase font-bold text-[#ffd700]">
+              ${STAT_META[k].label} <span>${"♪".repeat(h.rewards[k])}</span>
+            </span>
+          `).join("");
+
         return `
           <div class="flex items-center justify-between p-3 border-2 ${done ? 'bg-zinc-900/90 border-[#ffd700]' : 'bg-black border-white'} transition">
             <div class="flex items-center gap-3 min-w-0 pr-2">
@@ -551,8 +613,8 @@
               </button>
               <div class="min-w-0">
                 <div class="font-bold text-sm md:text-base break-words ${done ? 'line-through text-zinc-400' : 'text-white'}">${escapeHtml(h.title)}</div>
-                <div class="text-xs uppercase font-bold text-[#ffd700]">
-                  ${STAT_META[h.stat]?.label || h.stat} <span class="ml-1">${notes}</span>
+                <div class="flex flex-wrap gap-1.5 mt-1">
+                  ${rewardBadges}
                 </div>
               </div>
             </div>
@@ -594,7 +656,6 @@
       }
       container.innerHTML = html;
 
-      // Calcular racha actual (días seguidos completando al menos 1 hábito)
       let streak = 0;
       for (let i = 0; i >= -3650; i--) {
         const iso = getLocalISO(i);
@@ -623,14 +684,14 @@
     }
 
     // --- ACCIONES DE USUARIO ---
-    function spawnFloatingNote(x, y, points) {
+    function spawnFloatingNote(x, y, text) {
       const el = document.createElement("div");
       el.className = "note-float";
-      el.style.left = `${ (x || window.innerWidth / 2) - 20 }px`;
-      el.style.top = `${ (y || window.innerHeight / 2) - 20 }px`;
-      el.textContent = `¡${"♪".repeat(points)}!`;
+      el.style.left = `${Math.max(16, Math.min(window.innerWidth - 180, (x || window.innerWidth / 2) - 30))}px`;
+      el.style.top = `${(y || window.innerHeight / 2) - 20}px`;
+      el.textContent = text;
       document.body.appendChild(el);
-      setTimeout(() => el.remove(), 850);
+      setTimeout(() => el.remove(), 950);
     }
 
     function toggleHabit(id, ev) {
@@ -640,22 +701,38 @@
 
       const rec = getDayRecord(today);
       const idx = rec.completed.indexOf(id);
-      const prevRank = getRankIndex(state.stats[habit.stat] || 0);
+      const entries = Object.entries(habit.rewards || {}).filter(([, pts]) => pts > 0);
 
       if (idx === -1) {
         rec.completed.push(id);
-        state.stats[habit.stat] = (state.stats[habit.stat] || 0) + habit.points;
-        const newRank = getRankIndex(state.stats[habit.stat]);
+        let anyRankUp = false;
+        let totalNotes = 0;
+        const floatParts = [];
 
-        if (newRank > prevRank) {
-          showRankUpBanner(habit.stat, newRank);
-        } else {
-          playNoteSound(habit.points, false);
+        entries.forEach(([statKey, pts]) => {
+          const prevRank = getRankIndex(state.stats[statKey] || 0);
+          state.stats[statKey] = (state.stats[statKey] || 0) + pts;
+          const newRank = getRankIndex(state.stats[statKey]);
+          totalNotes += pts;
+          floatParts.push(`${STAT_META[statKey].label.slice(0, 3).toUpperCase()} ${"♪".repeat(pts)}`);
+
+          if (newRank > prevRank) {
+            anyRankUp = true;
+            showRankUpBanner(statKey, newRank);
+          }
+        });
+
+        if (!anyRankUp) {
+          playNoteSound(totalNotes, false);
         }
-        if (ev) spawnFloatingNote(ev.clientX, ev.clientY, habit.points);
+        if (ev && floatParts.length > 0) {
+          spawnFloatingNote(ev.clientX, ev.clientY, floatParts.join("  "));
+        }
       } else {
         rec.completed.splice(idx, 1);
-        state.stats[habit.stat] = Math.max(0, (state.stats[habit.stat] || 0) - habit.points);
+        entries.forEach(([statKey, pts]) => {
+          state.stats[statKey] = Math.max(0, (state.stats[statKey] || 0) - pts);
+        });
       }
 
       rec.totalTarget = state.habits.length;
@@ -668,8 +745,12 @@
       if (!habit) return;
       document.getElementById("edit-habit-id").value = habit.id;
       document.getElementById("habit-title").value = habit.title;
-      document.getElementById("habit-stat").value = habit.stat;
-      document.getElementById("habit-points").value = String(habit.points);
+
+      STAT_KEYS.forEach(k => {
+        formRewards[k] = (habit.rewards && habit.rewards[k]) ? Number(habit.rewards[k]) : 0;
+      });
+      renderMultiStatPicker();
+
       document.getElementById("form-title").textContent = "✎ EDITAR HÁBITO";
       document.getElementById("cancel-edit-btn").classList.remove("hidden");
       document.getElementById("habit-title").focus();
@@ -680,6 +761,7 @@
       document.getElementById("habit-title").value = "";
       document.getElementById("form-title").textContent = "+ NUEVO HÁBITO DIARIO";
       document.getElementById("cancel-edit-btn").classList.add("hidden");
+      resetFormRewards("conocimiento");
     }
 
     function deleteHabit(id) {
@@ -705,28 +787,34 @@
       e.preventDefault();
       const editId = document.getElementById("edit-habit-id").value;
       const titleInput = document.getElementById("habit-title");
-      const statInput = document.getElementById("habit-stat");
-      const pointsInput = document.getElementById("habit-points");
-
       const title = titleInput.value.trim();
       if (!title) return;
+
+      const selectedRewards = {};
+      STAT_KEYS.forEach(k => {
+        if (formRewards[k] > 0) selectedRewards[k] = formRewards[k];
+      });
+
+      if (Object.keys(selectedRewards).length === 0) {
+        alert("Selecciona al menos una estadística (♪) para este hábito.");
+        return;
+      }
 
       if (editId) {
         const existing = state.habits.find(h => h.id === editId);
         if (existing) {
           existing.title = title;
-          existing.stat = statInput.value;
-          existing.points = Number(pointsInput.value);
+          existing.rewards = selectedRewards;
         }
         cancelEdit();
       } else {
         state.habits.push({
           id: "h_" + Date.now(),
           title,
-          stat: statInput.value,
-          points: Number(pointsInput.value)
+          rewards: selectedRewards
         });
         titleInput.value = "";
+        resetFormRewards("conocimiento");
       }
 
       const today = getLocalISO(0);
@@ -764,6 +852,7 @@
         try {
           const imported = JSON.parse(e.target.result);
           if (imported && imported.stats && Array.isArray(imported.habits)) {
+            imported.habits = imported.habits.map(normalizeHabit);
             state = { ...createCleanState(), ...imported };
             saveState();
             closeSettingsModal();
@@ -791,7 +880,8 @@
       }[m]));
     }
 
-    // Inicializar y vigilar cambio de medianoche si queda abierta la app
+    // Inicializar
+    renderMultiStatPicker();
     renderAll();
     setInterval(() => {
       updateHeader();
