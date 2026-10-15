@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="description" content="PHANTOM HABITS - Rastreador de hábitos diarios estilo RPG con parámetros sociales y rachas." />
+  <meta name="description" content="PHANTOM HABITS - Rastreador de hábitos diarios y acciones estilo RPG con parámetros sociales y rachas." />
   <title>PHANTOM HABITS // RPG Habit Tracker</title>
   <link rel="manifest" href="./manifest.json" />
   <style>
@@ -35,7 +35,7 @@
       color: #ffffff;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
-      padding: 16px 14px 64px 14px;
+      padding: 14px 12px 70px 12px;
       overflow-x: hidden;
     }
 
@@ -61,8 +61,8 @@
     .app-header {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      margin-bottom: 28px;
+      gap: 12px;
+      margin-bottom: 22px;
     }
 
     @media (min-width: 640px) {
@@ -76,39 +76,39 @@
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .date-badge {
       background: var(--rebel-red);
-      border: 4px solid #fff;
-      padding: 8px 14px;
+      border: 3px solid #fff;
+      padding: 6px 12px;
       transform: rotate(-3deg);
-      box-shadow: 6px 6px 0 #000;
+      box-shadow: 5px 5px 0 #000;
       flex-shrink: 0;
     }
 
     .date-num {
-      font-size: 1.9rem;
+      font-size: 1.7rem;
       line-height: 1;
       color: #fff;
     }
 
     .date-day {
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       background: #000;
       color: #fff;
       padding: 2px 6px;
-      margin-top: 4px;
+      margin-top: 3px;
       display: inline-block;
     }
 
     .app-title {
-      font-size: 2.1rem;
+      font-size: 1.95rem;
       letter-spacing: 0.06em;
       color: #fff;
-      text-shadow: 4px 4px 0 var(--rebel-red);
-      line-height: 1.05;
+      text-shadow: 3px 3px 0 var(--rebel-red);
+      line-height: 1.02;
     }
 
     @media (min-width: 768px) {
@@ -129,15 +129,15 @@
       background: #fff;
       color: #000;
       font-weight: 800;
-      font-size: 0.72rem;
-      padding: 2px 8px;
+      font-size: 0.7rem;
+      padding: 2px 7px;
       text-transform: uppercase;
       transform: skewX(-12deg);
       border: 1px solid #000;
     }
 
     .active-days-text {
-      font-size: 0.75rem;
+      font-size: 0.73rem;
       font-weight: 800;
       color: var(--rebel-gold);
       text-transform: uppercase;
@@ -159,7 +159,7 @@
     .main-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 26px;
+      gap: 22px;
     }
 
     @media (min-width: 1024px) {
@@ -172,7 +172,7 @@
     .col-stack {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 22px;
     }
 
     /* CAJAS Y BOTONES REBEL */
@@ -180,8 +180,8 @@
       background: var(--rebel-panel);
       border: 3px solid #fff;
       box-shadow: 6px 6px 0 var(--rebel-red);
-      transform: skew(-1.2deg);
-      padding: 20px;
+      transform: skew(-0.8deg);
+      padding: 16px;
       position: relative;
     }
 
@@ -189,8 +189,8 @@
       background: var(--rebel-red);
       border: 3px solid #000;
       box-shadow: 6px 6px 0 #fff;
-      transform: skew(1.2deg);
-      padding: 20px;
+      transform: skew(0.8deg);
+      padding: 16px;
     }
 
     .rebel-btn {
@@ -200,17 +200,13 @@
       text-transform: uppercase;
       font-size: 0.85rem;
       letter-spacing: 0.04em;
-      padding: 8px 14px;
+      padding: 9px 14px;
       border: 2px solid #000;
       box-shadow: 4px 4px 0 var(--rebel-red);
       transform: skew(-6deg);
       cursor: pointer;
       user-select: none;
       transition: transform 0.1s, background 0.15s;
-    }
-
-    .rebel-btn:hover {
-      background: var(--rebel-gold);
     }
 
     .rebel-btn:active {
@@ -225,7 +221,7 @@
     .section-tag {
       background: #fff;
       color: #000;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       padding: 4px 12px;
       display: inline-block;
       transform: skewX(-12deg);
@@ -236,11 +232,53 @@
     .section-tag-red {
       background: var(--rebel-red);
       color: #fff;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       padding: 4px 12px;
       display: inline-block;
       transform: skewX(-12deg);
       border: 2px solid #fff;
+    }
+
+    /* PESTAÑAS PRINCIPALES (MÓVIL) */
+    .main-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .main-tab-btn {
+      padding: 12px 8px;
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 3px solid #fff;
+      background: #000;
+      color: #9ca3af;
+      cursor: pointer;
+      transform: skewX(-6deg);
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
+    }
+
+    .main-tab-btn span.sub {
+      font-family: system-ui, sans-serif;
+      font-size: 0.65rem;
+      font-weight: 800;
+      margin-top: 3px;
+      opacity: 0.85;
+    }
+
+    .main-tab-btn.active {
+      background: var(--rebel-red);
+      color: #fff;
+      border-color: var(--rebel-gold);
+      box-shadow: 4px 4px 0 var(--rebel-gold);
     }
 
     /* RADAR Y DESGLOSE */
@@ -248,12 +286,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 8px 0;
+      margin: 6px 0;
     }
 
     #radar-svg {
       width: 100%;
-      max-width: 280px;
+      max-width: 265px;
       height: auto;
       overflow: visible;
     }
@@ -261,21 +299,21 @@
     .stats-list {
       display: flex;
       flex-direction: column;
-      gap: 9px;
-      margin-top: 10px;
+      gap: 8px;
+      margin-top: 8px;
     }
 
     .stat-card {
       background: rgba(0, 0, 0, 0.9);
       border: 1px solid #2e2e2e;
-      padding: 8px 12px;
+      padding: 8px 11px;
     }
 
     .stat-card-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       margin-bottom: 5px;
     }
 
@@ -315,7 +353,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       gap: 8px;
     }
@@ -323,10 +361,10 @@
     .weekly-bars {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
+      gap: 6px;
       align-items: end;
-      height: 142px;
-      padding: 22px 8px 6px 8px;
+      height: 148px;
+      padding: 20px 6px 6px 6px;
       background: rgba(0, 0, 0, 0.65);
       border: 1px solid #2b2b2b;
     }
@@ -361,7 +399,7 @@
     }
 
     .bar-day {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       margin-top: 5px;
     }
 
@@ -370,14 +408,40 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+    }
+
+    .type-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .type-opt-btn {
+      padding: 9px 8px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      border: 2px solid #000;
+      background: rgba(0, 0, 0, 0.65);
+      color: #d1d5db;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .type-opt-btn.active {
+      background: var(--rebel-gold);
+      color: #000;
+      border-color: #fff;
+      box-shadow: 3px 3px 0 #000;
     }
 
     .form-input-row {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     @media (min-width: 640px) {
@@ -391,8 +455,8 @@
       background: #000;
       color: #fff;
       border: 2px solid #fff;
-      padding: 10px 12px;
-      font-size: 0.9rem;
+      padding: 11px 12px;
+      font-size: 0.92rem;
       outline: none;
     }
 
@@ -403,11 +467,11 @@
     .picker-panel {
       background: rgba(0, 0, 0, 0.88);
       border: 2px solid #000;
-      padding: 12px;
+      padding: 10px;
     }
 
     .picker-hint {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
       color: #d1d5db;
@@ -418,7 +482,7 @@
     .picker-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+      gap: 7px;
     }
 
     @media (min-width: 640px) {
@@ -432,7 +496,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 8px 6px;
+      padding: 9px 6px;
       border: 2px solid #3f3f46;
       background: #18181b;
       color: #a1a1aa;
@@ -451,13 +515,19 @@
     /* FILTROS Y LISTA DE HÁBITOS */
     .filter-row {
       display: flex;
-      flex-wrap: wrap;
+      overflow-x: auto;
       gap: 6px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .filter-row::-webkit-scrollbar {
+      display: none;
     }
 
     .filter-btn {
-      padding: 5px 10px;
+      padding: 6px 11px;
       font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
@@ -465,6 +535,8 @@
       background: #000;
       color: #a1a1aa;
       cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .filter-btn.active {
@@ -499,12 +571,13 @@
       align-items: center;
       gap: 12px;
       min-width: 0;
-      padding-right: 8px;
+      padding-right: 6px;
+      flex: 1;
     }
 
     .check-btn {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -513,7 +586,7 @@
       background: #18181b;
       color: transparent;
       font-weight: 900;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       cursor: pointer;
     }
 
@@ -537,8 +610,25 @@
     .badges-wrap {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      align-items: center;
+      gap: 5px;
       margin-top: 5px;
+    }
+
+    .type-pill {
+      font-size: 0.62rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border: 1px solid #52525b;
+      background: #27272a;
+      color: #e4e4e7;
+    }
+
+    .type-pill.daily {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
     }
 
     .reward-badge {
@@ -554,22 +644,23 @@
       color: var(--rebel-gold);
     }
 
+    .pts-sum-badge {
+      font-size: 0.68rem;
+      font-weight: 900;
+      color: #fff;
+      background: var(--rebel-red);
+      padding: 2px 6px;
+      border: 1px solid #fff;
+    }
+
     .icon-btn {
       background: transparent;
       border: none;
       color: #9ca3af;
       font-weight: 800;
-      font-size: 0.95rem;
-      padding: 4px 8px;
+      font-size: 1rem;
+      padding: 6px 8px;
       cursor: pointer;
-    }
-
-    .icon-btn:hover {
-      color: var(--rebel-gold);
-    }
-
-    .icon-btn.del:hover {
-      color: var(--rebel-red);
     }
 
     /* MODAL */
@@ -674,7 +765,7 @@
       <!-- COLUMNA IZQUIERDA: ESTADÍSTICAS Y RACHAS -->
       <section class="col-stack">
         <div class="rebel-box">
-          <div style="margin-top: -32px; margin-bottom: 10px;">
+          <div style="margin-top: -28px; margin-bottom: 8px;">
             <span class="rebel-font section-tag">PARÁMETROS SOCIALES</span>
           </div>
 
@@ -694,54 +785,37 @@
           </div>
 
           <div id="weekly-bars" class="weekly-bars"></div>
-          <p style="font-size: 0.7rem; color: var(--rebel-muted); margin-top: 8px; text-align: right;">
-            Mejor racha histórica: <span id="best-streak" style="color: #fff; font-weight: 800;">0 días</span>
-          </p>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.7rem; color: var(--rebel-muted);">
+            <span>Porcentaje según puntos (♪) diarios</span>
+            <span>Mejor racha: <strong id="best-streak" style="color: #fff;">0 días</strong></span>
+          </div>
         </div>
       </section>
 
-      <!-- COLUMNA DERECHA: HÁBITOS DIARIOS -->
+      <!-- COLUMNA DERECHA: HÁBITOS DIARIOS Y ACCIONES -->
       <section class="col-stack">
-        <div class="rebel-box-red">
-          <div class="form-top">
-            <h2 id="form-title" class="rebel-font" style="font-size: 1.5rem; text-shadow: 2px 2px 0 #000;">
-              + NUEVO HÁBITO DIARIO
-            </h2>
-            <button id="cancel-edit-btn" type="button" onclick="cancelEdit()" style="display: none; background: #000; color: #fff; border: 1px solid #fff; padding: 4px 8px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; cursor: pointer;">
-              ✕ Cancelar edición
+
+        <!-- PESTAÑAS PRINCIPALES PARA MÓVIL: HÁBITOS DIARIOS vs ACCIONES -->
+        <div class="rebel-box" style="flex: 1;">
+          <div class="main-tabs">
+            <button type="button" id="tab-daily" onclick="setMainTab('daily')" class="main-tab-btn active">
+              <span>🔥 HÁBITOS DIARIOS</span>
+              <span class="sub" id="tab-daily-count">Rutina fija (0)</span>
+            </button>
+            <button type="button" id="tab-actions" onclick="setMainTab('actions')" class="main-tab-btn">
+              <span>⚡ ACCIONES</span>
+              <span class="sub" id="tab-actions-count">Todas las creadas (0)</span>
             </button>
           </div>
 
-          <form id="habit-form">
-            <input type="hidden" id="edit-habit-id" value="" />
-            <div class="form-input-row">
-              <input
-                id="habit-title"
-                type="text"
-                required
-                maxlength="70"
-                placeholder="Ej. Entrenar escuchando un audiolibro..."
-                class="text-input"
-              />
-              <button type="submit" class="rebel-btn" style="padding: 10px 22px; font-size: 1rem;">
-                GUARDAR
-              </button>
+          <div class="weekly-header" style="margin-bottom: 12px;">
+            <div>
+              <div id="view-subtitle" style="font-size: 0.75rem; color: #d1d5db; font-weight: 700;">
+                Puntos ganados hoy vs Meta de hábitos diarios:
+              </div>
             </div>
-
-            <div class="picker-panel">
-              <span class="picker-hint">
-                Toca una o varias estadísticas para asignar notas (♪ → ♪♪ → ♪♪♪):
-              </span>
-              <div id="multi-stat-picker" class="picker-grid"></div>
-            </div>
-          </form>
-        </div>
-
-        <div class="rebel-box" style="flex: 1;">
-          <div class="weekly-header" style="margin-bottom: 16px;">
-            <span class="rebel-font section-tag">OBJETIVOS DE HOY</span>
-            <div id="daily-progress-text" class="rebel-font" style="font-size: 1.15rem;">
-              0 / 0 COMPLETADOS
+            <div id="daily-progress-text" class="rebel-font" style="font-size: 1.15rem; color: var(--rebel-gold);">
+              0 / 0 ♪ (0%)
             </div>
           </div>
 
@@ -756,6 +830,54 @@
 
           <div id="habits-list" class="habits-container"></div>
         </div>
+
+        <!-- FORMULARIO PARA CREAR / EDITAR HÁBITO O ACCIÓN -->
+        <div class="rebel-box-red" id="form-card">
+          <div class="form-top">
+            <h2 id="form-title" class="rebel-font" style="font-size: 1.4rem; text-shadow: 2px 2px 0 #000;">
+              + CREAR HÁBITO O ACCIÓN
+            </h2>
+            <button id="cancel-edit-btn" type="button" onclick="cancelEdit()" style="display: none; background: #000; color: #fff; border: 1px solid #fff; padding: 5px 10px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; cursor: pointer;">
+              ✕ Cancelar
+            </button>
+          </div>
+
+          <form id="habit-form">
+            <input type="hidden" id="edit-habit-id" value="" />
+
+            <!-- SELECTOR DE TIPO: HÁBITO DIARIO vs ACCIÓN PUNTUAL -->
+            <div class="type-selector">
+              <button type="button" id="type-btn-daily" onclick="setFormType(true)" class="type-opt-btn active">
+                🔥 Es Hábito Diario (Rutina)
+              </button>
+              <button type="button" id="type-btn-action" onclick="setFormType(false)" class="type-opt-btn">
+                ⚡ Es Acción (Ocasional)
+              </button>
+            </div>
+
+            <div class="form-input-row">
+              <input
+                id="habit-title"
+                type="text"
+                required
+                maxlength="70"
+                placeholder="Ej. Entrenar 45m / Terminar un libro..."
+                class="text-input"
+              />
+              <button type="submit" class="rebel-btn" style="padding: 11px 22px; font-size: 1rem;">
+                GUARDAR
+              </button>
+            </div>
+
+            <div class="picker-panel">
+              <span class="picker-hint">
+                Toca una o varias estadísticas para asignar su peso en puntos (♪ = 1 pt, ♪♪ = 2 pts, ♪♪♪ = 3 pts):
+              </span>
+              <div id="multi-stat-picker" class="picker-grid"></div>
+            </div>
+          </form>
+        </div>
+
       </section>
 
     </main>
@@ -770,7 +892,7 @@
       </div>
 
       <p style="font-size: 0.78rem; color: #d1d5db; line-height: 1.5; margin-bottom: 16px;">
-        Tus datos se guardan 100% en tu dispositivo sin conexión a internet. Descarga una copia de seguridad (`.json`) cuando quieras conservar un respaldo externo.
+        Tus datos se guardan 100% en tu móvil sin conexión a internet. Descarga una copia de seguridad (`.json`) cuando quieras conservar un respaldo externo.
       </p>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -789,7 +911,7 @@
       <div style="background: #09090b; border: 1px solid rgba(185, 28, 28, 0.6); padding: 12px;">
         <div style="font-size: 0.75rem; font-weight: 800; color: #f87171; text-transform: uppercase; margin-bottom: 4px;">Zona de reinicio</div>
         <p style="font-size: 0.7rem; color: #9ca3af; margin-bottom: 10px;">
-          Borra todos los hábitos, rachas y devuelve las estadísticas a 0 para empezar una partida desde cero:
+          Borra todos los hábitos, acciones, rachas y devuelve las estadísticas a 0 para empezar de cero:
         </p>
         <button onclick="resetAllData()" style="background: #b91c1c; color: #fff; font-weight: 800; font-size: 0.75rem; padding: 8px 12px; text-transform: uppercase; width: 100%; border: 1px solid #fff; cursor: pointer;">
           🗑️ BORRAR TODO Y EMPEZAR DE CERO
@@ -815,7 +937,12 @@
     };
 
     const STAT_KEYS = Object.keys(STAT_META);
+
+    // Estado del formulario y navegación
     let formRewards = { conocimiento: 2, coraje: 0, destreza: 0, gentileza: 0, encanto: 0 };
+    let formIsDaily = true; // true = Hábito Diario, false = Acción ocasional
+    let currentMainTab = "daily"; // "daily" = Hábitos diarios | "actions" = Todas las acciones creadas
+    let currentFilter = "all";
 
     function getLocalISO(offsetDays = 0) {
       const d = new Date();
@@ -837,19 +964,37 @@
       };
     }
 
+    // Suma total de puntos (♪) que aporta un hábito o acción
+    function getHabitTotalPoints(h) {
+      if (!h || !h.rewards) return 0;
+      return Object.values(h.rewards).reduce((acc, v) => acc + (Number(v) || 0), 0);
+    }
+
+    // Suma total de puntos que suman todos los Hábitos Diarios activos (100% de la meta diaria)
+    function getDailyTargetPoints() {
+      const dailyHabits = state.habits.filter(h => h.isDaily !== false);
+      const sum = dailyHabits.reduce((acc, h) => acc + getHabitTotalPoints(h), 0);
+      if (sum > 0) return sum;
+      // Si el usuario solo ha creado Acciones y ningún Hábito Diario, usamos la suma de todas las acciones
+      return state.habits.reduce((acc, h) => acc + getHabitTotalPoints(h), 0);
+    }
+
     function normalizeHabit(h) {
-      if (h.rewards && typeof h.rewards === "object") return h;
-      const rewards = {};
-      if (h.stat) rewards[h.stat] = Number(h.points) || 1;
+      let rewards = {};
+      if (h.rewards && typeof h.rewards === "object") {
+        rewards = h.rewards;
+      } else if (h.stat) {
+        rewards[h.stat] = Number(h.points) || 1;
+      }
       return {
         id: h.id || ("h_" + Date.now()),
-        title: h.title || "Hábito",
-        rewards
+        title: h.title || "Acción",
+        rewards,
+        isDaily: h.isDaily !== undefined ? Boolean(h.isDaily) : true
       };
     }
 
     let state = loadState();
-    let currentFilter = "all";
 
     function loadState() {
       try {
@@ -871,6 +1016,25 @@
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
+    }
+
+    // --- NAVEGACIÓN ENTRE HÁBITOS DIARIOS Y ACCIONES ---
+    function setMainTab(tab) {
+      currentMainTab = tab;
+      document.getElementById("tab-daily").classList.toggle("active", tab === "daily");
+      document.getElementById("tab-actions").classList.toggle("active", tab === "actions");
+
+      // Al cambiar de pestaña, preseleccionamos ese tipo en el formulario por comodidad
+      if (!document.getElementById("edit-habit-id").value) {
+        setFormType(tab === "daily");
+      }
+      renderHabits();
+    }
+
+    function setFormType(isDaily) {
+      formIsDaily = Boolean(isDaily);
+      document.getElementById("type-btn-daily").classList.toggle("active", formIsDaily);
+      document.getElementById("type-btn-action").classList.toggle("active", !formIsDaily);
     }
 
     function renderMultiStatPicker() {
@@ -972,7 +1136,10 @@
 
       document.getElementById("sound-btn").textContent = state.soundEnabled ? "🔊 SFX: ON" : "🔇 SFX: OFF";
 
-      const activeDays = Object.keys(state.history).filter(k => (state.history[k]?.completed?.length || 0) > 0).length;
+      const activeDays = Object.keys(state.history).filter(k => {
+        const rec = getDayRecord(k);
+        return rec.earnedPoints > 0 || rec.completed.length > 0;
+      }).length;
       document.getElementById("total-days-badge").textContent = `${activeDays} DÍAS ACTIVOS`;
     }
 
@@ -1054,14 +1221,30 @@
       }).join("");
     }
 
+    // Calcula los puntos obtenidos y la meta de puntos para cualquier día
     function getDayRecord(isoDate) {
       const raw = state.history[isoDate];
-      if (!raw) return { completed: [], totalTarget: state.habits.length };
-      if (Array.isArray(raw)) return { completed: raw, totalTarget: state.habits.length };
-      return {
-        completed: raw.completed || [],
-        totalTarget: raw.totalTarget || state.habits.length
-      };
+      const currentTargetPts = getDailyTargetPoints();
+
+      if (!raw) {
+        return { completed: [], earnedPoints: 0, targetPoints: currentTargetPts };
+      }
+
+      const completed = Array.isArray(raw) ? raw : (raw.completed || []);
+
+      // Calculamos los puntos reales sumando el valor en ♪ de cada hábito/acción completado
+      let calculatedEarned = 0;
+      completed.forEach(id => {
+        const h = state.habits.find(item => item.id === id);
+        if (h) {
+          calculatedEarned += getHabitTotalPoints(h);
+        }
+      });
+
+      const earnedPoints = calculatedEarned > 0 ? calculatedEarned : (Number(raw.earnedPoints) || 0);
+      const targetPoints = Number(raw.targetPoints) || currentTargetPts;
+
+      return { completed, earnedPoints, targetPoints };
     }
 
     function renderHabits() {
@@ -1070,21 +1253,38 @@
       const completedToday = record.completed;
       const list = document.getElementById("habits-list");
 
-      const validCompletedCount = state.habits.filter(h => completedToday.includes(h.id)).length;
+      const dailyHabits = state.habits.filter(h => h.isDaily !== false);
+      document.getElementById("tab-daily-count").textContent = `Rutina fija (${dailyHabits.length})`;
+      document.getElementById("tab-actions-count").textContent = `Todas las creadas (${state.habits.length})`;
+
+      const targetPts = getDailyTargetPoints();
+      const earnedPts = record.earnedPoints;
+      const todayPct = targetPts === 0 ? 0 : Math.min(100, Math.round((earnedPts / targetPts) * 100));
+
       document.getElementById("daily-progress-text").textContent =
-        `${validCompletedCount} / ${state.habits.length} COMPLETADOS`;
+        `${earnedPts} / ${targetPts} ♪ (${todayPct}%)`;
 
       document.querySelectorAll(".filter-btn").forEach(btn => {
         const active = btn.dataset.filter === currentFilter;
         btn.className = `filter-btn ${active ? 'active' : ''}`;
       });
 
-      if (state.habits.length === 0) {
+      // Filtrar según pestaña activa ("daily" = solo Hábitos Diarios | "actions" = TODAS las acciones creadas)
+      let baseList = currentMainTab === "daily"
+        ? state.habits.filter(h => h.isDaily !== false)
+        : state.habits;
+
+      if (baseList.length === 0) {
+        const emptyTitle = currentMainTab === "daily" ? "SIN HÁBITOS DIARIOS" : "CATÁLOGO DE ACCIONES VACÍO";
+        const emptyDesc = currentMainTab === "daily"
+          ? "Añade tus rutinas diarias abajo (marcando 'Es Hábito Diario') o cambia a la pestaña ACCIONES para ver todas las actividades."
+          : "Usa el formulario rojo de abajo para crear tanto Hábitos Diarios como Acciones puntuales.";
+
         list.innerHTML = `
-          <div style="border: 2px dashed #3f3f46; padding: 28px 16px; text-align: center; margin: 8px 0;">
-            <div class="rebel-font" style="font-size: 1.4rem; color: var(--rebel-gold); margin-bottom: 6px;">TU AGENDA ESTÁ VACÍA</div>
-            <p style="font-size: 0.78rem; color: #9ca3af; max-width: 400px; margin: 0 auto; line-height: 1.4;">
-              Usa el panel superior para registrar tus objetivos diarios. Puedes activar varias estadísticas en un mismo hábito.
+          <div style="border: 2px dashed #3f3f46; padding: 26px 14px; text-align: center; margin: 6px 0;">
+            <div class="rebel-font" style="font-size: 1.35rem; color: var(--rebel-gold); margin-bottom: 6px;">${emptyTitle}</div>
+            <p style="font-size: 0.78rem; color: #9ca3af; max-width: 420px; margin: 0 auto; line-height: 1.4;">
+              ${emptyDesc}
             </p>
           </div>
         `;
@@ -1092,16 +1292,19 @@
       }
 
       const filtered = currentFilter === "all"
-        ? state.habits
-        : state.habits.filter(h => h.rewards && h.rewards[currentFilter] > 0);
+        ? baseList
+        : baseList.filter(h => h.rewards && h.rewards[currentFilter] > 0);
 
       if (filtered.length === 0) {
-        list.innerHTML = `<div style="color: #9ca3af; font-size: 0.78rem; font-style: italic; padding: 14px;">No tienes hábitos que suban esta estadística.</div>`;
+        list.innerHTML = `<div style="color: #9ca3af; font-size: 0.78rem; font-style: italic; padding: 14px;">No hay elementos en esta pestaña que suban esa estadística.</div>`;
         return;
       }
 
       list.innerHTML = filtered.map(h => {
         const done = completedToday.includes(h.id);
+        const totalPts = getHabitTotalPoints(h);
+        const isDaily = h.isDaily !== false;
+
         const rewardBadges = STAT_KEYS
           .filter(k => h.rewards && h.rewards[k] > 0)
           .map(k => `
@@ -1114,14 +1317,18 @@
           <div class="habit-item ${done ? 'done' : ''}">
             <div class="habit-left">
               <button onclick="toggleHabit('${h.id}', event)" class="check-btn ${done ? 'done' : ''}">✓</button>
-              <div style="min-width: 0;">
+              <div style="min-width: 0; flex: 1;">
                 <div class="habit-title ${done ? 'done' : ''}">${escapeHtml(h.title)}</div>
-                <div class="badges-wrap">${rewardBadges}</div>
+                <div class="badges-wrap">
+                  <span class="type-pill ${isDaily ? 'daily' : ''}">${isDaily ? '🔥 Diario' : '⚡ Acción'}</span>
+                  <span class="pts-sum-badge">+${totalPts} ♪</span>
+                  ${rewardBadges}
+                </div>
               </div>
             </div>
             <div style="display: flex; align-items: center; gap: 2px; flex-shrink: 0;">
               <button onclick="startEditHabit('${h.id}')" class="icon-btn" title="Editar">✎</button>
-              <button onclick="deleteHabit('${h.id}')" class="icon-btn del" title="Eliminar">✕</button>
+              <button onclick="deleteHabit('${h.id}')" class="icon-btn" title="Eliminar">✕</button>
             </div>
           </div>
         `;
@@ -1131,6 +1338,7 @@
     function renderWeeklyChart() {
       const container = document.getElementById("weekly-bars");
       const dayLabels = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
+      const currentTargetPts = getDailyTargetPoints();
 
       let html = "";
       for (let i = -6; i <= 0; i++) {
@@ -1140,9 +1348,14 @@
         const label = dayLabels[dObj.getDay()];
 
         const rec = getDayRecord(iso);
-        const doneCount = rec.completed.length;
-        const denominator = i === 0 ? Math.max(1, state.habits.length) : Math.max(1, rec.totalTarget || state.habits.length);
-        const pct = state.habits.length === 0 && doneCount === 0 ? 0 : Math.min(100, Math.round((doneCount / denominator) * 100));
+        const earned = rec.earnedPoints;
+        const denominator = i === 0
+          ? Math.max(1, currentTargetPts)
+          : Math.max(1, rec.targetPoints || currentTargetPts);
+
+        const pct = (currentTargetPts === 0 && earned === 0)
+          ? 0
+          : Math.min(100, Math.round((earned / denominator) * 100));
         const isToday = i === 0;
 
         html += `
@@ -1161,7 +1374,7 @@
       for (let i = 0; i >= -3650; i--) {
         const iso = getLocalISO(i);
         const rec = getDayRecord(iso);
-        if (rec.completed.length > 0) {
+        if (rec.earnedPoints > 0 || rec.completed.length > 0) {
           streak++;
         } else if (i < 0) {
           break;
@@ -1231,8 +1444,19 @@
         });
       }
 
-      rec.totalTarget = state.habits.length;
-      state.history[today] = rec;
+      // Recalcular puntos ganados hoy según el peso en ♪
+      let newEarned = 0;
+      rec.completed.forEach(cid => {
+        const item = state.habits.find(h => h.id === cid);
+        if (item) newEarned += getHabitTotalPoints(item);
+      });
+
+      state.history[today] = {
+        completed: rec.completed,
+        earnedPoints: newEarned,
+        targetPoints: getDailyTargetPoints()
+      };
+
       saveState();
     }
 
@@ -1242,32 +1466,40 @@
       document.getElementById("edit-habit-id").value = habit.id;
       document.getElementById("habit-title").value = habit.title;
 
+      setFormType(habit.isDaily !== false);
+
       STAT_KEYS.forEach(k => {
         formRewards[k] = (habit.rewards && habit.rewards[k]) ? Number(habit.rewards[k]) : 0;
       });
       renderMultiStatPicker();
 
-      document.getElementById("form-title").textContent = "✎ EDITAR HÁBITO";
+      document.getElementById("form-title").textContent = "✎ EDITAR ELEMENTO";
       document.getElementById("cancel-edit-btn").style.display = "inline-block";
+      document.getElementById("form-card").scrollIntoView({ behavior: "smooth" });
       document.getElementById("habit-title").focus();
     }
 
     function cancelEdit() {
       document.getElementById("edit-habit-id").value = "";
       document.getElementById("habit-title").value = "";
-      document.getElementById("form-title").textContent = "+ NUEVO HÁBITO DIARIO";
+      document.getElementById("form-title").textContent = "+ CREAR HÁBITO O ACCIÓN";
       document.getElementById("cancel-edit-btn").style.display = "none";
+      setFormType(currentMainTab === "daily");
       resetFormRewards("conocimiento");
     }
 
     function deleteHabit(id) {
       const habit = state.habits.find(h => h.id === id);
       if (!habit) return;
-      if (!confirm(`¿Seguro que quieres eliminar el hábito "${habit.title}"? (Tus puntos ganados se mantendrán)`)) return;
+      if (!confirm(`¿Seguro que quieres eliminar "${habit.title}"? (Tus puntos ganados en las estadísticas se mantendrán)`)) return;
 
       state.habits = state.habits.filter(h => h.id !== id);
       const today = getLocalISO(0);
-      if (state.history[today]) state.history[today].totalTarget = state.habits.length;
+      if (state.history[today]) {
+        const rec = getDayRecord(today);
+        state.history[today].targetPoints = getDailyTargetPoints();
+        state.history[today].earnedPoints = rec.earnedPoints;
+      }
       if (document.getElementById("edit-habit-id").value === id) cancelEdit();
       saveState();
     }
@@ -1290,7 +1522,7 @@
       });
 
       if (Object.keys(selectedRewards).length === 0) {
-        alert("Selecciona al menos una estadística (♪) para este hábito.");
+        alert("Selecciona al menos una estadística (♪) para asignar puntos.");
         return;
       }
 
@@ -1299,20 +1531,26 @@
         if (existing) {
           existing.title = title;
           existing.rewards = selectedRewards;
+          existing.isDaily = formIsDaily;
         }
         cancelEdit();
       } else {
         state.habits.push({
           id: "h_" + Date.now(),
           title,
-          rewards: selectedRewards
+          rewards: selectedRewards,
+          isDaily: formIsDaily
         });
         titleInput.value = "";
         resetFormRewards("conocimiento");
       }
 
       const today = getLocalISO(0);
-      if (state.history[today]) state.history[today].totalTarget = state.habits.length;
+      if (state.history[today]) {
+        const rec = getDayRecord(today);
+        state.history[today].targetPoints = getDailyTargetPoints();
+        state.history[today].earnedPoints = rec.earnedPoints;
+      }
       saveState();
     });
 
@@ -1369,12 +1607,13 @@
       }[m]));
     }
 
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
+
     renderMultiStatPicker();
     renderAll();
     setInterval(updateHeader, 60000);
-    if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js").catch(() => {});
-}
   </script>
 </body>
 </html>
