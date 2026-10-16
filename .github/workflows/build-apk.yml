@@ -36,9 +36,27 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: 5. Configurar Pantalla Completa sin barras
+      - name: 5. Configurar Pantalla Completa y Logo Personalizado
         run: |
+          # Estilos sin barras
           printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n<style name="AppTheme" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBarLaunch" parent="AppTheme.NoActionBar">\n<item name="android:background">#0a0a0a</item>\n</style>\n</resources>\n' > android/app/src/main/res/values/styles.xml
+
+          # Inyectar icono de forma limpia si existe
+          ICON_FILE=""
+          if [ -f "android-chrome-512x512.png" ]; then ICON_FILE="android-chrome-512x512.png";
+          elif [ -f "icon.png" ]; then ICON_FILE="icon.png"; fi
+
+          if [ -n "$ICON_FILE" ]; then
+            mkdir -p android/app/src/main/res/drawable
+            cp "$ICON_FILE" android/app/src/main/res/drawable/ic_launcher_foreground.png
+            # Reemplazar iconos legacy sin tocar carpetas anydpi
+            for d in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+              if [ -d "android/app/src/main/res/mipmap-$d" ]; then
+                cp "$ICON_FILE" "android/app/src/main/res/mipmap-$d/ic_launcher.png"
+                cp "$ICON_FILE" "android/app/src/main/res/mipmap-$d/ic_launcher_round.png"
+              fi
+            done
+          fi
 
       - name: 6. Compilar APK
         run: |
