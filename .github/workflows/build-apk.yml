@@ -27,19 +27,19 @@ jobs:
       - name: 4. Preparar carpeta web e instalar Capacitor
         run: |
           mkdir -p www
-          if [ -f "index.html" ]; then cp index.html www/index.html; elif [ -f "índice.html" ]; then cp "índice.html" www/index.html; fi
+          find . -maxdepth 1 -name "*.html" -exec cp {} www/index.html \;
           cp manifest.json www/ 2>/dev/null || true
           cp sw.js www/ 2>/dev/null || true
           cp *.png www/ 2>/dev/null || true
-          npm init -y
-          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
-          npx cap init "Phantom Habits" "com.pablots.phantomhabits" --web-dir www
+          echo '{"name":"phantom-habits","version":"1.0.0","private":true}' > package.json
+          echo '{"appId":"com.pablots.phantomhabits","appName":"Phantom Habits","webDir":"www"}' > capacitor.config.json
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7
           npx cap add android
           npx cap sync android
 
       - name: 5. Configurar Pantalla Completa e Icono
         run: |
-          printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n<style name="AppTheme" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBarLaunch" parent="AppTheme.NoActionBar">\n<item name="android:background">#0a0a0a</item>\n</style>\n</resources>\n' > android/app/src/main/res/values/styles.xml
+          printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n<style name="AppTheme" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBarLaunch" parent="Theme.AppCompat.NoActionBar">\n<item name="android:background">#0a0a0a</item>\n</style>\n</resources>\n' > android/app/src/main/res/values/styles.xml
           if [ -f "android-chrome-512x512.png" ]; then
             for dir in android/app/src/main/res/mipmap-*; do
               if [ -d "$dir" ]; then
