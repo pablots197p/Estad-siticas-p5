@@ -1,0 +1,89 @@
+name: Crear APK Nativo Phantom Habits
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Descargar archivos del repositorio
+        uses: actions/checkout@v4
+
+      - name: 2. Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 3. Instalar Java 21 para Android
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: 4. Instalar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 5. Preparar carpeta web e inicializar CapacitorJS
+        run: |
+          mkdir -p www
+          cp index.html www/
+          cp manifest.json www/ 2>/dev/null || true
+          cp sw.js www/ 2>/dev/null || true
+          cp *.png www/ 2>/dev/null || true
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "Phantom Habits" "com.pablots.phantomhabits" --web-dir www
+          npx cap add android
+
+      - name: 6. Configurar Pantalla Completa sin barras e Icono
+        run: |
+          # Quitar ActionBar (barra superior gris/roja) y dejar fondo negro puro
+          cat << 'EOF' > android/app/src/main/res/values/styles.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+                  <item name="android:background">#0a0a0a</item>
+                  <item name="android:windowBackground">#0a0a0a</item>
+                  <item name="android:statusBarColor">#0a0a0a</item>
+                  <item name="android:navigationBarColor">#080808</item>
+              </style>
+              <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
+                  <item name="windowActionBar">false</item>
+                  <item name="windowNoTitle">true</item>
+                  <item name="android:background">#0a0a0a</item>
+                  <item name="android:windowBackground">#0a0a0a</item>
+                  <item name="android:statusBarColor">#0a0a0a</item>
+                  <item name="android:navigationBarColor">#080808</item>
+              </style>
+              <style name="AppTheme.NoActionBarLaunch" parent="AppTheme.NoActionBar">
+                  <item name="android:background">#0a0a0a</item>
+              </style>
+          </resources>
+          EOF
+
+          # Si existe tu icono de 512x512, ponerlo como icono oficial de la APK
+          if [ -f "android-chrome-512x512.png" ]; then
+            for dir in android/app/src/main/res/mipmap-*; do
+              if [ -d "$dir" ]; then
+                cp android-chrome-512x512.png "$dir/ic_launcher.png" 2>/dev/null || true
+                cp android-chrome-512x512.png "$dir/ic_launcher_round.png" 2>/dev/null || true
+                cp android-chrome-512x512.png "$dir/ic_launcher_foreground.png" 2>/dev/null || true
+              fi
+            done
+          fi
+
+      - name: 7. Compilar y firmar el APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: 8. Subir APK listo para descargar
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhantomHabits-APK-Nativo
+          path: android/app/build/outputs/apk/debug/app-debug.apk
