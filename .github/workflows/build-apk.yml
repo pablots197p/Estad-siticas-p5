@@ -30,34 +30,52 @@ jobs:
           find . -maxdepth 1 -name "*.html" -exec cp {} www/index.html \;
           cp manifest.json www/ 2>/dev/null || true
           cp sw.js www/ 2>/dev/null || true
+          cp *.png www/ 2>/dev/null || true
           echo '{"name":"phantom-habits","version":"1.0.0","private":true}' > package.json
           echo '{"appId":"com.pablots.phantomhabits","appName":"Phantom Habits","webDir":"www"}' > capacitor.config.json
-          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/assets
           npx cap add android
-          npx cap sync android
 
-      - name: 5. Configurar Pantalla Completa y Logo Personalizado
+      - name: 5. Generar Icono Oficial de la Estrella y Pantalla Completa
         run: |
-          # Estilos sin barras
-          printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n<style name="AppTheme" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBarLaunch" parent="AppTheme.NoActionBar">\n<item name="android:background">#0a0a0a</item>\n</style>\n</resources>\n' > android/app/src/main/res/values/styles.xml
+          # 1. Buscar tu imagen PNG de la estrella (priorizando 512x512 o cualquier .png del repo)
+          ICON_SRC=""
+          if [ -f "android-chrome-512x512.png" ]; then
+            ICON_SRC="android-chrome-512x512.png"
+          elif [ -f "android-chrome-192x192.png" ]; then
+            ICON_SRC="android-chrome-192x192.png"
+          else
+            ICON_SRC=$(find . -maxdepth 1 -name "*.png" | head -n 1)
+          fi
 
-          # Buscar el icono disponible en el repo
-          ICON_FILE=""
-          if [ -f "android-chrome-512x512.png" ]; then ICON_FILE="android-chrome-512x512.png";
-          elif [ -f "icon.png" ]; then ICON_FILE="icon.png"; fi
+          echo "Icono detectado: $ICON_SRC"
 
-          if [ -n "$ICON_FILE" ]; then
-            # Borrar los iconos vectoriales XML por defecto que bloquean el PNG
-            rm -rf android/app/src/main/res/mipmap-anydpi-v26/*
-            
-            # Copiar tu icono en todas las densidades de mipmap de Android
-            for d in mdpi hdpi xhdpi xxhdpi xxxhdpi anydpi-v26; do
+          # 2. Usar la herramienta oficial @capacitor/assets + reemplazo directo
+          if [ -n "$ICON_SRC" ]; then
+            mkdir -p assets
+            cp "$ICON_SRC" assets/icon-only.png
+            cp "$ICON_SRC" assets/icon-foreground.png
+            cp "$ICON_SRC" assets/splash.png
+            cp "$ICON_SRC" assets/splash-dark.png
+            npx capacitor-assets generate --android --iconBackgroundColor '#0a0a0a' --iconBackgroundColorDark '#0a0a0a' --splashBackgroundColor '#0a0a0a' --splashBackgroundColorDark '#0a0a0a' || true
+
+            # Eliminar cualquier rastro del logo azul/blanco de Capacitor en carpetas adaptativas
+            rm -rf android/app/src/main/res/mipmap-anydpi-v26
+            rm -rf android/app/src/main/res/drawable/ic_launcher*
+            rm -rf android/app/src/main/res/drawable-v24/ic_launcher*
+
+            # Forzar tu imagen exacta en todas las carpetas de iconos de Android
+            for d in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
               mkdir -p "android/app/src/main/res/mipmap-$d"
-              cp "$ICON_FILE" "android/app/src/main/res/mipmap-$d/ic_launcher.png"
-              cp "$ICON_FILE" "android/app/src/main/res/mipmap-$d/ic_launcher_round.png"
+              cp "$ICON_SRC" "android/app/src/main/res/mipmap-$d/ic_launcher.png"
+              cp "$ICON_SRC" "android/app/src/main/res/mipmap-$d/ic_launcher_round.png"
+              cp "$ICON_SRC" "android/app/src/main/res/mipmap-$d/ic_launcher_foreground.png"
             done
           fi
-          
+
+          # 3. Estilos de pantalla completa en negro puro sin barras
+          printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n<style name="AppTheme" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">\n<item name="windowActionBar">false</item>\n<item name="windowNoTitle">true</item>\n<item name="android:background">#0a0a0a</item>\n<item name="android:windowBackground">#0a0a0a</item>\n<item name="android:statusBarColor">#0a0a0a</item>\n<item name="android:navigationBarColor">#080808</item>\n</style>\n<style name="AppTheme.NoActionBarLaunch" parent="Theme.AppCompat.NoActionBar">\n<item name="android:background">#0a0a0a</item>\n</style>\n</resources>\n' > android/app/src/main/res/values/styles.xml
+
       - name: 6. Compilar APK
         run: |
           cd android
